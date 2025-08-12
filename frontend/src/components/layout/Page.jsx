@@ -17,7 +17,7 @@ export default function Page({ title, actions = null, children, className = "" }
         {/* footer (optional) */}
         <footer className="mt-10 border-t border-zinc-900/80">
           <div className="container mx-auto px-4 py-6 text-xs text-zinc-500">
-            © {new Date().getFullYear()} – Clueless Acebook
+            © {new Date().getFullYear()} Clueless Acebook
           </div>
         </footer>
       </div>

@@ -18,7 +18,7 @@ export default function RootLayout() {
       {/* Footer */}
       <footer className="border-t border-zinc-900/80">
         <div className="container px-4 py-6 text-xs text-zinc-500">
-          © {new Date().getFullYear()}
+          © {new Date().getFullYear()} Clueless Acebook
         </div>
       </footer>
     </div>
