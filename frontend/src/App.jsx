@@ -5,6 +5,8 @@ import { HomePage } from "./pages/Home/HomePage";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { SignupPage } from "./pages/Signup/SignupPage";
 import { FeedPage } from "./pages/Feed/FeedPage";
+import { UserProfilePage } from "./pages/Profile/UserProfilePage";
+import { AllUsersPage } from "./pages/Users/AllUsersPage";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +16,9 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/signup", element: <SignupPage /> },
       { path: "/posts", element: <FeedPage /> },
+      { path: "/users", element: <AllUsersPage /> }, // Add this line
+      { path: "/user/:userId", element: <UserProfilePage /> }, // userId parameter
+      { path: "/profile", element: <UserProfilePage /> }, // current user route
     ],
   },
 ]);
