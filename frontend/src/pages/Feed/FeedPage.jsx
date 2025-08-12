@@ -37,7 +37,9 @@ export function FeedPage() {
       <h2>Posts</h2>
       <button onClick={() => navigate("/create-post")}>Create New Post</button>
       <div className="feed" role="feed">
-        {posts.map((post) => (
+        {[...posts]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .map((post) => (
           <Post post={post} key={post._id} />
         ))}
       </div>
