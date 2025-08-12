@@ -34,6 +34,7 @@ export function FeedPage() {
   return (
     <>
       <h2>Posts</h2>
+      <button onClick={() => navigate("/create-post")}>Create New Post</button>
       <div className="feed" role="feed">
         {posts.map((post) => (
           <Post post={post} key={post._id} />
