@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import PostsList from "../../components/PostList";
 
 import { getPosts } from "../../services/posts";
 import Post from "../../components/Post";
@@ -39,6 +40,7 @@ export function FeedPage() {
         {posts.map((post) => (
           <Post post={post} key={post._id} />
         ))}
+        <PostsList />
       </div>
       <LogoutButton />
     </>

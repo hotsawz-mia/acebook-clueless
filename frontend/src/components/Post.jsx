@@ -5,10 +5,11 @@
 // export default Post;
 
 function Post(props) {
-  const { message, createdAt, _id } = props.post;
+  const { message, createdAt, _id, email} = props.post;
 
   return (
     <article key={_id}>
+      <p>{email}</p>
       <p>{message}</p>
       {createdAt && (
         <small>
