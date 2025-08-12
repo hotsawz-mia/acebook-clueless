@@ -1,25 +1,14 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+@import "tailwindcss";
+
+/* Tell Tailwind what "font-sans" should be in v4 */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+@layer base {
+  html, body, #root { height: 100%; }
+  body { @apply bg-zinc-950 text-zinc-100 antialiased font-sans; }
+  a { @apply text-indigo-400 hover:text-indigo-300; }
+  h1, h2, h3 { @apply font-semibold; }
 }
