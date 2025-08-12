@@ -40,7 +40,6 @@ export function FeedPage() {
         {posts.map((post) => (
           <Post post={post} key={post._id} />
         ))}
-        <PostsList />
       </div>
       <LogoutButton />
     </>

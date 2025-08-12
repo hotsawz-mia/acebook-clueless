@@ -8,6 +8,7 @@ const PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 // We use the Schema to create the Post model. Models are classes which we can
