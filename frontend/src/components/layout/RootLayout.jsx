@@ -1,5 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 import logoUrl from "../../assets/Favicon.png"; 
+import NavBar from "../../components/NavBar";
 
 export default function RootLayout() {
   return (
@@ -11,14 +12,7 @@ export default function RootLayout() {
             <img src={logoUrl} alt="Global Menace Network" className="h-7 w-auto" />
             <h1 className="text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
           </div>
-
-          {/* Navigation */}
-          <nav className="flex items-center gap-6 text-sm">
-            <Link to="/" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Home</Link>
-            <Link to="/posts" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Posts</Link>
-            <Link to="/users" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Users</Link>
-            <Link to="/profile" className="text-menace-cream/80 hover:text-menace-cream transition-colors">My Profile</Link>
-          </nav>
+          <NavBar/>
         </div>
       </header>
 

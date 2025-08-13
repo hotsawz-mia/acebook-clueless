@@ -19,17 +19,19 @@ export function SignupPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
-      <h2 className="text-2xl font-semibold">Sign Up</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label htmlFor="email" className="label">Email</label>
-        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" />
+    <>
+      <div className="max-w-md mx-auto space-y-6">
+        <h2 className="text-2xl font-semibold">Sign Up</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <label htmlFor="email" className="label">Email</label>
+          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" />
 
-        <label htmlFor="password" className="label">Password</label>
-        <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
+          <label htmlFor="password" className="label">Password</label>
+          <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
 
-        <button role="submit-button" id="submit" type="submit" className="btn-primary w-full">Create account</button>
-      </form>
-    </div>
+          <button role="submit-button" id="submit" type="submit" className="btn-primary w-full">Create account</button>    
+        </form>
+      </div>
+    </>
   );
 }
