@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { login } from "../../services/authentication";
+import NavBar from "../../components/NavBar";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,6 +31,7 @@ export function LoginPage() {
 
   return (
     <>
+      <NavBar />
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>
@@ -51,3 +53,4 @@ export function LoginPage() {
     </>
   );
 }
+
