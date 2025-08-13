@@ -1,5 +1,5 @@
 import "./Post.css";
-
+import LikeButton from "./LikeButton.jsx"
 // function Post(props) {
 //   return <article key={props.post._id}>{props.post.message}</article>;
 // }
@@ -25,6 +25,9 @@ function Post(props) {
           Posted at: {new Date(createdAt).toLocaleString()}
         </small>
       )}
+
+        <br/><LikeButton />
+
     </article>
   );
 }

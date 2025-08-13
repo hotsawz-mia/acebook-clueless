@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getPosts } from "../../services/posts";
 import Post from "../../components/Post";
 import LogoutButton from "../../components/LogoutButton";
+import LikeButton from "../../components/LikeButton.jsx";
 
 export function FeedPage() {
   const [posts, setPosts] = useState([]);
