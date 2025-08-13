@@ -12,13 +12,8 @@ export function FeedPage() {
     const token = localStorage.getItem("token");
     if (token) {
       getPosts(token)
-        .then((data) => {
-          setPosts(data.posts);
-        })
-        .catch((err) => {
-          console.error(err);
-          navigate("/login");
-        });
+        .then((data) => setPosts(data.posts))
+        .catch((err) => { console.error(err); navigate("/login"); });
     } else {
       navigate("/login");
     }
@@ -26,7 +21,7 @@ export function FeedPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <h2 className="text-2xl font-semibold">Posts</h2>
+      <h2 className="text-2xl font-semibold">Menacing Posts</h2>
       <div className="space-y-4" role="feed">
         {posts.map((post) => (
           <Post post={post} key={post._id} />

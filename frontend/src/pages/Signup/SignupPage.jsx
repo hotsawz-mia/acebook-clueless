@@ -22,36 +22,13 @@ export function SignupPage() {
     <div className="max-w-md mx-auto space-y-6">
       <h2 className="text-2xl font-semibold">Sign Up</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label htmlFor="email" className="block font-medium">
-          Email:
-        </label>
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-        />
+        <label htmlFor="email" className="label">Email</label>
+        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" />
 
-        <label htmlFor="password" className="block font-medium">
-          Password:
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-        />
+        <label htmlFor="password" className="label">Password</label>
+        <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
 
-        <input
-          role="submit-button"
-          id="submit"
-          type="submit"
-          value="Submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-        />
+        <button role="submit-button" id="submit" type="submit" className="btn-primary w-full">Create account</button>
       </form>
     </div>
   );

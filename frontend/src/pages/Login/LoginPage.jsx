@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authentication";
-import Page from "../../components/layout/Page";
-import Button from "../../components/ui/Button";
-import FormField from "../../components/ui/FormField";
-import Input from "../../components/ui/Input";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,46 +25,28 @@ export function LoginPage() {
     }
   }
 
-
-
   return (
     <div className="grid place-items-center">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-xl">
+      <div className="card w-full max-w-md p-6 shadow-xl">
         <header className="mb-6">
           <h1 className="text-2xl">Welcome back</h1>
-          <p className="mt-1 text-sm text-zinc-400">Sign in to continue</p>
+          <p className="mt-1 text-sm text-menace-cream/70">Sign in to continue</p>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <FormField id="email" label="Email">
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              error={!!error}
-            />
-          </FormField>
+          <label htmlFor="email" className="label">Email</label>
+          <input id="email" type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-          <FormField id="password" label="Password">
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              error={!!error}
-            />
-          </FormField>
+          <label htmlFor="password" className="label">Password</label>
+          <input id="password" type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-          {error && <FormField id="form-error" error={error} />}
+          {error && (
+            <p className="text-sm text-red-400" role="alert">{error}</p>
+          )}
 
-          <Button type="submit" disabled={loading} className="w-full">
+          <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? "Signing in…" : "Sign in"}
-          </Button>
+          </button>
         </form>
       </div>
     </div>
