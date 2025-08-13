@@ -16,9 +16,9 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/signup", element: <SignupPage /> },
       { path: "/posts", element: <FeedPage /> },
-      { path: "/users", element: <AllUsersPage /> }, // Add this line
-      { path: "/user/:userId", element: <UserProfilePage /> }, // userId parameter
-      { path: "/profile", element: <UserProfilePage /> }, // current user route
+      { path: "/users", element: <AllUsersPage /> }, 
+      { path: "/user/:userId", element: <UserProfilePage /> }, 
+      { path: "/profile", element: <UserProfilePage /> }, 
     ],
   },
 ]);
