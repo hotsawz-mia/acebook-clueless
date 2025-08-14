@@ -68,3 +68,11 @@ describe("Login Page", () => {
     expect(navigateMock).toHaveBeenCalledWith("/login");
   });
 });
+
+
+vi.mock("../../src/services/users", () => ({
+  getUserById: vi.fn(() => Promise.resolve({ user: { _id: "ME_ID" } })),
+}));
+  
+  // Ensure authentication mock still returns a token
+  // and assert navigate("/posts") after form submit.

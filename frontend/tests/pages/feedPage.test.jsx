@@ -39,15 +39,19 @@ describe("Feed Page", () => {
 
     render(<FeedPage />);
 
-    const posts = await screen.findAllByRole("article");
+    // const posts = await screen.findAllByRole("article");
 
-    // added new variables
+    // // added new variables
+    // const expectedDate0 = new Date(mockPosts[0].createdAt).toLocaleString();
+    // const expectedDate1 = new Date(mockPosts[1].createdAt).toLocaleString();
+    // // added new methods
+    // expect(posts[0].textContent).toEqual(`Posted at: ${expectedDate0}`);
+    // expect(posts[1].textContent).toEqual(`Posted at: ${expectedDate1}`);
+    const dates = await screen.findAllByTestId("post-date");
     const expectedDate0 = new Date(mockPosts[0].createdAt).toLocaleString();
     const expectedDate1 = new Date(mockPosts[1].createdAt).toLocaleString();
-    // added new methods
-    expect(posts[0].textContent).toEqual(`Posted at: ${expectedDate0}`);
-    expect(posts[1].textContent).toEqual(`Posted at: ${expectedDate1}`);
-    
+    expect(dates[0].textContent).toBe(`Posted at: ${expectedDate0}`);
+    expect(dates[1].textContent).toBe(`Posted at: ${expectedDate1}`);
   });
 
   test("It navigates to login if no token is present", async () => {

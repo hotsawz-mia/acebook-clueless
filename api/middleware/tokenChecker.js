@@ -1,40 +1,29 @@
 const JWT = require("jsonwebtoken");
 
 function tokenChecker(req, res, next) {
-  let token;
-  const authHeader = req.get("Authorization");
+  const authHeader = req.get("Authorization") || "";
+  let token = "";
 
-  if (authHeader) {
-    token = authHeader.slice(7); // remove "Bearer "
+  if (authHeader.toLowerCase().startsWith("bearer ")) {
+    token = authHeader.slice(7).trim(); // after "Bearer "
+  } else {
+    token = authHeader.trim(); // allow raw token
   }
 
+  if (!token) return res.status(401).json({ message: "auth error" });
+
   try {
-    console.log("Token received:", token);
     const payload = JWT.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded payload:", payload);
+    req.user_id = payload.sub;
 
-    const user_id = payload.sub;
-    console.log("User ID from sub claim:", user_id);
+    if (!req.user_id) return res.status(401).json({ message: "auth error" });
 
-    if (!user_id) {
-      throw new Error("No sub claim in JWT token");
-    }
-
-    // Add the user_id from the payload to the request object
-    req.user_id = user_id;
-
-    // ✅ Generate a fresh token and attach it for the controller to send back
-    const newToken = JWT.sign(
-      { sub: user_id },
-      process.env.JWT_SECRET,
-      { expiresIn: "10m" }
-    );
-    res.locals.token = newToken;
+    // optional: rotate token
+    res.locals.token = JWT.sign({ sub: req.user_id }, process.env.JWT_SECRET, { expiresIn: "10m" });
 
     next();
   } catch (err) {
-    console.log("Token verification error:", err);
-    res.status(401).json({ message: "auth error" });
+    return res.status(401).json({ message: "auth error" });
   }
 }
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authentication";
+import { getUserById } from "../../services/users";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,8 +15,14 @@ export function LoginPage() {
     setLoading(true);
     setError("");
     try {
+      // 1) login -> token
       const token = await login(email, password);
       localStorage.setItem("token", token);
+  
+      // 2) fetch /me with the token -> userId
+      const me = await getUserById("me", token); // expects { user: { _id, ... } }
+      if (me?.user?._id) localStorage.setItem("userId", me.user._id);
+  
       navigate("/posts");
     } catch (err) {
       console.error(err);

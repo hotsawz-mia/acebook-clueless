@@ -2,54 +2,61 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import User from "../../components/User";
 import LogoutButton from "../../components/LogoutButton";
-import { getUserById } from "../../services/users";
+import { getUserById, followUser, unfollowUser } from "../../services/users"; 
 
 export function UserProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);           
+  const [toggling, setToggling] = useState(false);                 
   const navigate = useNavigate();
-  const { userId } = useParams(); // Get userId from URL params
-
-
-
+  const { userId } = useParams();
+  const currentUserId = localStorage.getItem("userId"); 
+  const token = localStorage.getItem("token");                     
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log("Token found:", !!token); // Debug: log if token exists
-    
-    if (token) {
-      setLoading(true);
-      // If no userId in URL, use "me" or get current user
-      const targetUserId = userId || "me";
-      console.log("Fetching user with ID:", targetUserId); // Debug: log target user ID
-      
-      getUserById(targetUserId, token)
-        .then((data) => {
-          console.log("User data received:", data); // Debug: log response
-          setUser(data.user);
-          // localStorage.setItem("token", data.token);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching user:", err); // Better error logging
-          setLoading(false);
-          
-          // Check if it's a 404 (user not found) vs other errors
-          if (err.message.includes("404") || err.message.includes("User not found")) {
-            // User doesn't exist, don't redirect to login
-            setUser(null); // This will show "User Not Found" message
-          } else {
-            // Authentication or other error, redirect to login
-            navigate("/login");
-          }
-        });
-    } else {
-      console.log("No token found, redirecting to login"); // Debug: log redirect reason
-      navigate("/login");
-    }
-  }, [navigate, userId]);
+    if (!token) return navigate("/login");
 
-  // Show loading state
+    const targetUserId = userId || "me";
+    setLoading(true);
+
+    getUserById(targetUserId, token)
+      .then(async (data) => {
+        setUser(data.user);
+        // compute following state only when viewing someone else
+        if (userId && userId !== currentUserId) {
+          const me = await getUserById("me", token);
+          setIsFollowing(me.user.following?.map(String).includes(String(userId)));
+        } else {
+          setIsFollowing(false);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        if (String(err).includes("404")) setUser(null);
+        else navigate("/login");
+      })
+      .finally(() => setLoading(false));
+  }, [navigate, userId, currentUserId, token]);
+
+  async function handleFollowToggle() {                           
+    if (!userId || userId === currentUserId) return;
+    try {
+      setToggling(true);
+      if (isFollowing) {
+        await unfollowUser(userId, token);
+        setIsFollowing(false);
+      } else {
+        await followUser(userId, token);
+        setIsFollowing(true);
+      }
+    } catch (e) {
+      console.error("Follow toggle failed:", e);
+    } finally {
+      setToggling(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
@@ -58,7 +65,6 @@ export function UserProfilePage() {
     );
   }
 
-  // Show user not found
   if (!user) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
@@ -68,13 +74,34 @@ export function UserProfilePage() {
     );
   }
 
+  const viewingOwn =
+    userId === currentUserId || (!userId && user._id === currentUserId);
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <h2 className="text-2xl font-semibold">{user.username || user.email}'s Profile</h2>
+      <h2 className="text-2xl font-semibold">
+        {viewingOwn ? "Your" : user.username || user.email}{" "}Profile
+      </h2>
+
+      {/* Follow/Unfollow button when viewing someone else */}
+      {!viewingOwn && (
+        <div>
+          <button
+            onClick={handleFollowToggle}
+            disabled={toggling}
+            aria-pressed={isFollowing}
+            className={isFollowing ? "btn-outline" : "btn-primary shadow-menace"}
+          >
+            {toggling ? "Working..." : isFollowing ? "Unfollow" : "Follow"}
+        </button>
+        </div>
+      )}
+
       <div className="space-y-4">
         <User user={user} />
       </div>
-      <LogoutButton />
+
+      {viewingOwn && <LogoutButton />}
     </div>
   );
 }
