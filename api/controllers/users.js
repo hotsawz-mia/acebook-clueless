@@ -1,10 +1,35 @@
 const User = require("../models/user");
 
-function create(req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
+// function create(req, res) {
+//   console.log("CREATE USER REQ BODY:", req.body); 
 
-  const user = new User({ email, password });
+//   const email = req.body.email;
+//   const password = req.body.password;
+
+//   const user = new User({ email, password });
+//   user
+//     .save()
+//     .then((user) => {
+//       console.log("User created, id:", user._id.toString());
+//       res.status(201).json({ message: "OK" });
+//     })
+//     .catch((err) => {
+//       console.error("CREATE USER ERROR:", err);
+//       if (err?.code === 11000) {
+//         return res.status(409).json({ message: "Email already exists" });
+//       }
+//       return res.status(400).json({
+//         message: err?.message || "Validation failed",
+//         errors: err?.errors || null,
+//       });
+//     });
+// }
+
+
+function create(req, res) {
+  const { email, password, username } = req.body; // ← include username
+
+  const user = new User({ email, password, username }); // ← pass it to the model
   user
     .save()
     .then((user) => {
@@ -12,10 +37,16 @@ function create(req, res) {
       res.status(201).json({ message: "OK" });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(400).json({ message: "Something went wrong" });
+      console.error("CREATE USER ERROR:", err);
+      if (err?.code === 11000) {
+        return res.status(409).json({ message: "Email already exists" });
+      }
+      return res
+        .status(400)
+        .json({ message: err?.message || "Validation failed", errors: err?.errors || null });
     });
 }
+
 
 async function getUsers(req, res) {
   try {
