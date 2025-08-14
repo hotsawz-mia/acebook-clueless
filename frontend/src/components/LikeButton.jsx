@@ -41,7 +41,7 @@ const LikeButton = ({ post = { likes: 0, _id: null, likedByUser: false } }) => {
   };
 
   return (
-    <button onClick={toggleLike} className={`p-2 rounded-full transition 
+    <button onClick={toggleLike} className={`flex items-center gap-2 p-2 rounded-full transition 
         ${liked ? "text-menace-red" : "text-menace-cream/60"} 
         hover:text-menace-red hover:bg-menace-red/10`}
       aria-label="Like"
