@@ -16,23 +16,19 @@ function Post({ post }) {
       {user && (
         <small>
           Posted by: {user.username ?? user.email}
-          <br />
-          <br />
         </small>
       )}
-
-      <p className="text-lg sm:text-xl font-semibold leading-snug">
-        {message ?? "(no message)"}
-      </p>
-
       {date && (
         <small>
           <br />
           Posted at: {date}
-        </small>
+          <br />
+          <br />
+        </small> 
       )}
-
-      <br />
+      <p className="text-lg sm:text-xl font-semibold leading-snug">
+        {message ?? "(no message)"}
+      </p>
       <LikeButton post={post} />
       <CommentSection postId={safeId} />
 

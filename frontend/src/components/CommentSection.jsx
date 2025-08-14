@@ -78,7 +78,7 @@ function CommentSection({ postId }) {
             />
             <button
             type="submit"
-            className="btn-primary  text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600"
+            className="btn-primary  text-white px-4 py-2 rounded-lg text-sm hover:bg-black hover:text-red-500"
             >
             Submit
             </button>
