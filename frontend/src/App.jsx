@@ -5,9 +5,6 @@ import { HomePage } from "./pages/Home/HomePage";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { SignupPage } from "./pages/Signup/SignupPage";
 import { FeedPage } from "./pages/Feed/FeedPage";
-
-import { CreatePostPage } from "./pages/Create_Post/CreatePostPage";
-
 import { UserProfilePage } from "./pages/Profile/UserProfilePage";
 import { AllUsersPage } from "./pages/Users/AllUsersPage";
 import { CreatePostPage } from "./pages/Create_Post/CreatePostPage";
@@ -26,10 +23,6 @@ const router = createBrowserRouter([
       { path: "/profile", element: <UserProfilePage /> },
       { path: "/create-post", element: <CreatePostPage /> }, // keep PR route
     ],
-  },
-    {
-    path: "/create-post",
-    element: <CreatePostPage />,
   },
 ]);
 
