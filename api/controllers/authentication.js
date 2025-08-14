@@ -13,7 +13,14 @@ async function createToken(req, res) {
     console.log("Auth Error: Passwords do not match");
     res.status(401).json({ message: "Password incorrect" });
   } else {
-    const token = generateToken(user.id);
+    console.log("User found:", user);
+    console.log("User _id:", user._id);
+    console.log("User _id type:", typeof user._id);
+    console.log("User _id toString:", user._id.toString());
+    
+    const token = generateToken(user._id);
+    console.log("Generated token:", token);
+    
     res.status(201).json({ token: token, message: "OK" });
   }
 }

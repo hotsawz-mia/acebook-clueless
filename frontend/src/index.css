@@ -1,25 +1,146 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  --color-menace-cream: #E4D6C3;
+  --color-menace-red:   #C63226;
+  --color-menace-ink:   #0D110C;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* quick probe styles */
+.probe { @apply text-red-500; }
+body { @apply bg-menace-ink text-menace-cream font-sans; }
+
+
+
+/* ==== Tokens (Tailwind v4) ==================================== */
+@theme {
+  /* fonts */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji",
+               "Segoe UI Symbol";
+
+  /* brand colours */
+  --color-menace-cream: #E4D6C3; /* text / light surfaces */
+  --color-menace-red:   #C63226; /* primary / CTA */
+  --color-menace-ink:   #0D110C; /* background */
+
+  /* neutrals you might still use in places */
+  --color-ink-800: #151914;
+  --color-ink-700: #1b211b;
+
+  /* elevation */
+  --shadow-menace: 0 10px 30px -10px rgb(198 50 38 / 0.45);
 }
 
-a:hover {
-  color: #535bf2;
+/* ==== Base ===================================================== */
+@layer base {
+  html, body, #root { height: 100%; }
+
+  body {
+    @apply bg-menace-ink text-menace-cream antialiased font-sans;
+  }
+
+  /* type */
+  h1, h2, h3, h4, h5, h6 { @apply font-semibold tracking-tight; }
+  h1 { @apply text-3xl; }
+  h2 { @apply text-2xl; }
+  h3 { @apply text-xl; }
+
+  /* links */
+  a {
+    @apply text-menace-cream/80 hover:text-menace-cream underline-offset-4 hover:underline transition-colors;
+  }
+
+  /* selection */
+  ::selection { @apply bg-menace-red text-menace-cream; }
+
+  /* forms baseline */
+  input, textarea, select, button {
+    @apply outline-none;
+  }
 }
 
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
+/* ==== Components =============================================== */
+@layer components {
+  /* layout helpers */
+  .shell {
+    @apply min-h-dvh bg-menace-ink text-menace-cream;
+  }
+  .header {
+    @apply border-b border-white/10;
+  }
+  .footer {
+    @apply border-t border-white/10 text-xs text-menace-cream/60;
+  }
+  .nav-link {
+    @apply text-menace-cream/80 hover:text-menace-cream transition-colors;
+  }
+
+  /* cards */
+  .card {
+    @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm;
+  }
+  .card-hover {
+    @apply hover:border-white/20 transition-colors;
+  }
+  /* section headers */
+  .section-title {
+    @apply text-xl font-semibold flex items-center gap-2;
+  }
+  .section-subtitle {
+    @apply text-sm text-menace-cream/70;
+  }
+
+  
+  .btn,
+  .btn-primary,
+  .btn-ghost,
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;      /* 8px 16px */
+    border-radius: 0.75rem;    /* 12px */
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;     /* anchors shouldn't underline like links */
+  }
+
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .btn-primary {
+    background: #C63226;       /* menace red */
+    color: #E4D6C3;            /* menace cream */
+    box-shadow: 0 10px 30px -10px rgb(198 50 38 / 0.45);
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+
+  .btn-ghost {
+    background: transparent;
+    color: rgba(228,214,195,0.85);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.05); }
+
+  .btn-outline {
+    color: #E4D6C3;
+    border: 1px solid rgba(228,214,195,0.25);
+  }
+  .btn-outline:hover {
+    border-color: rgba(228,214,195,0.40);
+    background: rgba(255,255,255,0.05);
+  }
+
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* ==== Utilities (tiny extras you’ll like) ====================== */
+@layer utilities {
+  .glass { @apply bg-white/5 backdrop-blur-sm border border-white/10; }
+  .muted { @apply text-menace-cream/70; }
+  .hard-shadow { box-shadow: 0 12px 40px -8px rgb(0 0 0 / 0.45); }
 }
+
+/* ==== Temporary probe (remove once happy) ====================== */
+/* .probe { @apply text-red-500; } */

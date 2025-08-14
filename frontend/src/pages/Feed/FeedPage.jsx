@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { getPosts } from "../../services/posts";
 import Post from "../../components/Post";
 import LogoutButton from "../../components/LogoutButton";
@@ -12,27 +11,17 @@ export function FeedPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const loggedIn = token !== null;
-    if (loggedIn) {
+    if (token) {
       getPosts(token)
-        .then((data) => {
-          setPosts(data.posts);
-          localStorage.setItem("token", data.token);
-        })
-        .catch((err) => {
-          console.error(err);
-          navigate("/login");
-        });
+        .then((data) => setPosts(data.posts))
+        .catch((err) => { console.error(err); navigate("/login"); });
+    } else {
+      navigate("/login");
     }
   }, [navigate]);
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    navigate("/login");
-    return;
-  }
-
   return (
+
     <>
       <h2>Posts</h2>
       <button onClick={() => navigate("/create-post")}>Create New Post</button>
@@ -40,10 +29,11 @@ export function FeedPage() {
         {[...posts]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .map((post) => (
+
           <Post post={post} key={post._id} />
         ))}
       </div>
       <LogoutButton />
-    </>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { signup } from "../../services/authentication";
 
 export function SignupPage() {
@@ -19,35 +18,20 @@ export function SignupPage() {
     }
   }
 
-  function handleEmailChange(event) {
-    setEmail(event.target.value);
-  }
-
-  function handlePasswordChange(event) {
-    setPassword(event.target.value);
-  }
-
   return (
     <>
-      <h2>Signup</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          placeholder="Password"
-          id="password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <input role="submit-button" id="submit" type="submit" value="Submit" />
-      </form>
+      <div className="max-w-md mx-auto space-y-6">
+        <h2 className="text-2xl font-semibold">Sign Up</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <label htmlFor="email" className="label">Email</label>
+          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" />
+
+          <label htmlFor="password" className="label">Password</label>
+          <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
+
+          <button role="submit-button" id="submit" type="submit" className="btn-primary w-full">Create account</button>    
+        </form>
+      </div>
     </>
   );
 }

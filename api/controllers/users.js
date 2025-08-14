@@ -17,8 +17,43 @@ function create(req, res) {
     });
 }
 
+async function getUsers(req, res) {
+  try {
+    const users = await User.find();
+    res.status(200).json({ users: users });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+async function getUserById(req, res) {
+  try {
+    const userId = req.params.userId;
+    let targetUserId = userId;
+    
+    // If userId is "me", use the current user's ID from the token
+    if (userId === "me") {
+      targetUserId = req.user_id;
+    }
+    
+    const user = await User.findById(targetUserId);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    res.status(200).json({ user: user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
 const UsersController = {
   create: create,
+  getUsers: getUsers,
+  getUserById: getUserById,
 };
 
 module.exports = UsersController;

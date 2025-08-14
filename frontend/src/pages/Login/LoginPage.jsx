@@ -1,53 +1,57 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { login } from "../../services/authentication";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
     try {
       const token = await login(email, password);
       localStorage.setItem("token", token);
       navigate("/posts");
     } catch (err) {
       console.error(err);
-      navigate("/login");
+      setError("Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
-  }
-
-  function handleEmailChange(event) {
-    setEmail(event.target.value);
-  }
-
-  function handlePasswordChange(event) {
-    setPassword(event.target.value);
   }
 
   return (
     <>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <input role="submit-button" id="submit" type="submit" value="Submit" />
-      </form>
+      <div className="grid place-items-center">
+        <div className="card w-full max-w-md p-6 shadow-xl">
+          <header className="mb-6">
+            <h1 className="text-2xl">Welcome back</h1>
+            <p className="mt-1 text-sm text-menace-cream/70">Sign in to continue</p>
+          </header>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <label htmlFor="email" className="label">Email</label>
+            <input id="email" type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required />
+
+            <label htmlFor="password" className="label">Password</label>
+            <input id="password" type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+            {error && (
+              <p className="text-sm text-red-400" role="alert">{error}</p>
+            )}
+
+            <button type="submit" disabled={loading} className="btn-primary w-full">
+              {loading ? "Signing in…" : "Sign in"}
+            </button>
+          </form>
+        </div>
+      </div>
     </>
   );
 }
+

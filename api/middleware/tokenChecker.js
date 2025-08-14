@@ -10,8 +10,11 @@ function tokenChecker(req, res, next) {
   }
 
   try {
+    console.log("Token received:", token);
     const payload = JWT.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded payload:", payload);
     const user_id = payload.sub;
+    console.log("User ID from sub claim:", user_id);
 
     if (!user_id) {
       throw new Error("No sub claim in JWT token");
@@ -21,7 +24,7 @@ function tokenChecker(req, res, next) {
     req.user_id = user_id;
     next();
   } catch (err) {
-    console.log(err);
+    console.log("Token verification error:", err);
     res.status(401).json({ message: "auth error" });
   }
 }

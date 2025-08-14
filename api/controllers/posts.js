@@ -1,7 +1,7 @@
 const Post = require("../models/post");
-const { generateToken } = require("../lib/token");
 
 async function getAllPosts(req, res) {
+
   try {
     const posts = await Post.find().populate("user", "email");
 
@@ -27,8 +27,7 @@ async function createPost(req, res) {
 });
 await post.save();
 
-  const newToken = generateToken(req.user_id);
-  res.status(201).json({ message: "Post created", token: newToken });
+  res.status(201).json({ message: "Post created" });
 }
 
 async function likePost(req, res) {
