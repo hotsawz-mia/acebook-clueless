@@ -23,17 +23,31 @@ describe("Feed Page", () => {
     window.localStorage.removeItem("token");
   });
 
-  test("It displays posts from the backend", async () => {
+  test("It displays newest posts first from the backend", async () => {
     window.localStorage.setItem("token", "testToken");
 
-    const mockPosts = [{ _id: "12345", message: "Test Post 1" }];
+    // added mock posts
+    const mockPosts = [
+      
+      { _id: "1", createdAt: "2025-08-13T12:00:00Z", content: "Newest post" },
+      { _id: "2", createdAt: "2025-08-13T11:00:00Z", content: "Middle post" },
+      { _id: "3", createdAt: "2025-08-13T10:00:00Z", content: "Oldest post" },
+
+    ];
 
     getPosts.mockResolvedValue({ posts: mockPosts, token: "newToken" });
 
     render(<FeedPage />);
 
-    const post = await screen.findByRole("article");
-    expect(post.textContent).toEqual("Test Post 1");
+    const posts = await screen.findAllByRole("article");
+
+    // added new variables
+    const expectedDate0 = new Date(mockPosts[0].createdAt).toLocaleString();
+    const expectedDate1 = new Date(mockPosts[1].createdAt).toLocaleString();
+    // added new methods
+    expect(posts[0].textContent).toEqual(`Posted at: ${expectedDate0}`);
+    expect(posts[1].textContent).toEqual(`Posted at: ${expectedDate1}`);
+    
   });
 
   test("It navigates to login if no token is present", async () => {
@@ -41,4 +55,8 @@ describe("Feed Page", () => {
     const navigateMock = useNavigate();
     expect(navigateMock).toHaveBeenCalledWith("/login");
   });
+
 });
+
+
+

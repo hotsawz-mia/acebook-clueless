@@ -5,8 +5,12 @@ import { HomePage } from "./pages/Home/HomePage";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { SignupPage } from "./pages/Signup/SignupPage";
 import { FeedPage } from "./pages/Feed/FeedPage";
+
+import { CreatePostPage } from "./pages/Create_Post/CreatePostPage";
+
 import { UserProfilePage } from "./pages/Profile/UserProfilePage";
 import { AllUsersPage } from "./pages/Users/AllUsersPage";
+
 
 const router = createBrowserRouter([
   {
@@ -20,6 +24,10 @@ const router = createBrowserRouter([
       { path: "/user/:userId", element: <UserProfilePage /> }, // userId parameter
       { path: "/profile", element: <UserProfilePage /> }, // current user route
     ],
+  },
+    {
+    path: "/create-post",
+    element: <CreatePostPage />,
   },
 ]);
 
