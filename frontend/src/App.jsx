@@ -7,6 +7,7 @@ import { SignupPage } from "./pages/Signup/SignupPage";
 import { FeedPage } from "./pages/Feed/FeedPage";
 import { UserProfilePage } from "./pages/Profile/UserProfilePage";
 import { AllUsersPage } from "./pages/Users/AllUsersPage";
+import { CreatePostPage } from "./pages/Create_Post/CreatePostPage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       { path: "/user/:userId", element: <UserProfilePage /> }, 
       { path: "/profile", element: <UserProfilePage /> }, 
     ],
+  },
+    {
+    path: "/create-post",
+    element: <CreatePostPage />,
   },
 ]);
 
