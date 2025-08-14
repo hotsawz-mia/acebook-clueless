@@ -14,7 +14,10 @@ export function FeedPage() {
     if (token) {
       getPosts(token)
         .then((data) => setPosts(data.posts))
-        .catch((err) => { console.error(err); navigate("/login"); });
+        .catch((err) => {
+          console.error(err);
+          navigate("/login");
+        });
     } else {
       navigate("/login");
     }
@@ -22,17 +25,25 @@ export function FeedPage() {
 
   return (
 
-    <>
-      <h2>Posts</h2>
-      <button onClick={() => navigate("/create-post")}>Create New Post</button>
-      <div className="feed" role="feed">
-        {[...posts]
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .map((post) => (
+    <div className="max-w-2xl mx-auto space-y-6">
+      <h2 className="text-2xl font-semibold">Menacing Posts</h2>
 
-          <Post post={post} key={post._id} />
-        ))}
+      <button
+        className="btn-primary"
+        onClick={() => navigate("/create-post")}
+      >
+        Create New Post
+      </button>
+
+      <div className="space-y-4" role="feed">
+        {[...posts]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .map((post) => (
+            <Post post={post} key={post._id} />
+          ))}
+
       </div>
+
       <LogoutButton />
     </div>
   );

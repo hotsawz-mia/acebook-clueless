@@ -10,19 +10,21 @@ import { CreatePostPage } from "./pages/Create_Post/CreatePostPage";
 
 import { UserProfilePage } from "./pages/Profile/UserProfilePage";
 import { AllUsersPage } from "./pages/Users/AllUsersPage";
+import { CreatePostPage } from "./pages/Create_Post/CreatePostPage";
 
 
 const router = createBrowserRouter([
   {
-    element: <RootLayout />, // 👈 wrap all pages in RootLayout
+    element: <RootLayout />, // wrap all pages in RootLayout
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/signup", element: <SignupPage /> },
       { path: "/posts", element: <FeedPage /> },
-      { path: "/users", element: <AllUsersPage /> }, // Add this line
-      { path: "/user/:userId", element: <UserProfilePage /> }, // userId parameter
-      { path: "/profile", element: <UserProfilePage /> }, // current user route
+      { path: "/users", element: <AllUsersPage /> },
+      { path: "/user/:userId", element: <UserProfilePage /> },
+      { path: "/profile", element: <UserProfilePage /> },
+      { path: "/create-post", element: <CreatePostPage /> }, // keep PR route
     ],
   },
     {

@@ -67,12 +67,13 @@ describe("authentication service", () => {
     test("calls the backend url for a token", async () => {
       const testEmail = "test@testEmail.com";
       const testPassword = "12345678";
+      const testUsername = "Username";
 
       fetch.mockResponseOnce("", {
         status: 201,
       });
 
-      await signup(testEmail, testPassword);
+      await signup(testEmail, testPassword, testUsername);
 
       // This is an array of the arguments that were last passed to fetch
       const fetchArguments = fetch.mock.lastCall;
@@ -82,7 +83,7 @@ describe("authentication service", () => {
       expect(url).toEqual(`${BACKEND_URL}/users`);
       expect(options.method).toEqual("POST");
       expect(options.body).toEqual(
-        JSON.stringify({ email: testEmail, password: testPassword })
+        JSON.stringify({ email: testEmail, password: testPassword, username: testUsername })
       );
       expect(options.headers["Content-Type"]).toEqual("application/json");
     });
@@ -90,18 +91,20 @@ describe("authentication service", () => {
     test("returns nothing if the signup request was a success", async () => {
       const testEmail = "test@testEmail.com";
       const testPassword = "12345678";
+      const testUsername = "Username";
 
       fetch.mockResponseOnce(JSON.stringify(""), {
         status: 201,
       });
 
-      const token = await signup(testEmail, testPassword);
+      const token = await signup(testEmail, testPassword, testUsername);
       expect(token).toEqual(undefined);
     });
 
     test("throws an error if the request failed", async () => {
       const testEmail = "test@testEmail.com";
       const testPassword = "12345678";
+      const testUsername = "Username";
 
       fetch.mockResponseOnce(
         JSON.stringify({ message: "User already exists" }),
@@ -111,7 +114,7 @@ describe("authentication service", () => {
       );
 
       try {
-        await signup(testEmail, testPassword);
+        await signup(testEmail, testPassword, testUsername);
       } catch (err) {
         expect(err.message).toEqual(
           "Received status 400 when signing up. Expected 201"

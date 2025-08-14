@@ -20,6 +20,7 @@ export function LoginPage() {
     } catch (err) {
       console.error(err);
       setError("Invalid email or password.");
+      navigate("/login");
     } finally {
       setLoading(false);
     }

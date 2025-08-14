@@ -9,6 +9,7 @@ const PostSchema = new mongoose.Schema({
     default: Date.now,
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
   likes: {type: Number, default:0},
   likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
 });
@@ -19,8 +20,6 @@ const Post = mongoose.model("Post", PostSchema);
 
 // These lines will create a test post every time the server starts.
 // You can delete this once you are creating your own posts.
-
-
 
 
 module.exports = Post;

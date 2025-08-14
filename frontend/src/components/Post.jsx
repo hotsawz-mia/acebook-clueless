@@ -26,6 +26,7 @@ function Post(props) {
         </small>
       )}
 
+
         <br/><LikeButton post={props.post} />
 
     </article>

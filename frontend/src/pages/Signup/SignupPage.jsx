@@ -2,15 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup } from "../../services/authentication";
 
+
 export function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+
 
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      await signup(email, password);
+      await signup(email, password, username);
       navigate("/login");
     } catch (err) {
       console.error(err);
@@ -21,17 +24,56 @@ export function SignupPage() {
   return (
     <>
       <div className="max-w-md mx-auto space-y-6">
-        <h2 className="text-2xl font-semibold">Sign Up</h2>
+      <h2 className="text-2xl font-semibold">Sign Up</h2>
+
+      <div className="form-card">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <label htmlFor="email" className="label">Email</label>
-          <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" />
+          <div className="field">
+            <label htmlFor="username" className="label">Username</label>
+            <input
+              id="username"
+              type="text"
+              required
+              placeholder="yourname"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="input"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="email" className="label">Email</label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input"
+            />
+          </div>
 
-          <label htmlFor="password" className="label">Password</label>
-          <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
+          <div className="field">
+            <label htmlFor="password" className="label">Password</label>
+            <input
+              id="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input"
+            />
+          </div>
 
-          <button role="submit-button" id="submit" type="submit" className="btn-primary w-full">Create account</button>    
+          <button id="submit" type="submit" className="btn-primary w-full">
+            Create account
+          </button>
         </form>
       </div>
+    </div>
     </>
   );
 }
