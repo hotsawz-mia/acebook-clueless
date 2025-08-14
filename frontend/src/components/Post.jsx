@@ -1,7 +1,7 @@
 import LikeButton from "./LikeButton.jsx";
 
 function Post({ post }) {
-  if (!post) return null; // guard
+  if (!post) return null;
 
   const { message, createdAt, user, _id, id } = post;
   const safeId = _id ?? id ?? undefined;
@@ -12,27 +12,9 @@ function Post({ post }) {
 
   return (
     <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
-      {user && (
-        <small>
-          Posted by: {user.username ?? user.email}
-          <br />
-          <br />
-        </small>
-      )}
-
       <p className="text-lg sm:text-xl font-semibold leading-snug">
         {message ?? "(no message)"}
       </p>
-
-      {date && (
-        <small>
-          <br />
-          Posted at: {date}
-        </small>
-      )}
-
-      <br />
-      <LikeButton post={post} />
 
       <div className="flex items-center justify-between text-sm muted">
         <div className="space-y-1">
@@ -46,8 +28,7 @@ function Post({ post }) {
           )}
           {date && <div data-testid="post-date">Posted at: {date}</div>}
         </div>
-        {/* If LikeButton shouldn't appear twice, remove one of them */}
-        {/* <LikeButton /> */}
+        <LikeButton post={post} />
       </div>
     </article>
   );

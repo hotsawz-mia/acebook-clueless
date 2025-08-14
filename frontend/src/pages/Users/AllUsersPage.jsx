@@ -60,7 +60,6 @@ export function AllUsersPage() {
           ))}
         </div>
 
-        <LogoutButton />
       </div>
     </>
   );
