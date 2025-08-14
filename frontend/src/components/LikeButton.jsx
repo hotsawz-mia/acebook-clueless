@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { GiEvilLove } from "react-icons/gi";
 
@@ -42,8 +41,14 @@ const LikeButton = ({ post = { likes: 0, _id: null, likedByUser: false } }) => {
   };
 
   return (
-    <button onClick={toggleLike} className="like-button flex items-center gap-1">
-      {liked ? <GiEvilLove color="black" /> : <GiEvilLove color="grey" />}
+    <button onClick={toggleLike} className={`p-2 rounded-full transition 
+        ${liked ? "text-menace-red" : "text-menace-cream/60"} 
+        hover:text-menace-red hover:bg-menace-red/10`}
+      aria-label="Like"
+    >
+      <GiEvilLove size={28} />
+
+
       <span>{likes}</span>
     </button>
   );

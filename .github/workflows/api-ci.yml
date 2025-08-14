@@ -1,0 +1,36 @@
+name: CI • API
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:6
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd="mongosh --quiet --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      NODE_ENV: test
+      MONGODB_URI: mongodb://localhost:27017/acebook_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+      - name: Install deps
+        working-directory: api
+        run: npm ci || npm i
+      - name: Run tests
+        working-directory: api
+        run: npm test -- --runInBand
