@@ -1,4 +1,5 @@
 import LikeButton from "./LikeButton.jsx";
+import CommentSection from "./CommentSection.jsx";
 
 function Post({ post }) {
   if (!post) return null; // guard
@@ -33,22 +34,11 @@ function Post({ post }) {
 
       <br />
       <LikeButton post={post} />
+      <CommentSection postId={safeId} />
 
-      <div className="flex items-center justify-between text-sm muted">
-        <div className="space-y-1">
-          {user && (
-            <div data-testid="post-author">
-              <span>Posted by: </span>
-              <span className="font-medium text-menace-cream">
-                {user.username ?? user.email}
-              </span>
-            </div>
-          )}
-          {date && <div data-testid="post-date">Posted at: {date}</div>}
-        </div>
-        {/* If LikeButton shouldn't appear twice, remove one of them */}
-        {/* <LikeButton /> */}
-      </div>
+
+      
+
     </article>
   );
 }
