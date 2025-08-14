@@ -24,6 +24,7 @@ export function FeedPage() {
   }, [navigate]);
 
   return (
+
     <div className="max-w-2xl mx-auto space-y-6">
       <h2 className="text-2xl font-semibold">Menacing Posts</h2>
 
@@ -40,6 +41,7 @@ export function FeedPage() {
           .map((post) => (
             <Post post={post} key={post._id} />
           ))}
+
       </div>
 
       <LogoutButton />
