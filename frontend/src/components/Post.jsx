@@ -4,11 +4,30 @@ function Post({ post }) {
   const { message, createdAt, user, _id } = post;
 
   return (
-    <article className="card card-hover p-6 space-y-4" data-post-id={_id}>
+
+    <article className="card card-hover p-6 space-y-4" key={_id}>
       {/* Message first for focus */}
-      <p className="text-lg sm:text-xl font-semibold leading-snug">
+
+      {user && (
+        <small> 
+          Posted by: {user.email /* or user.username if you have it */}
+          <br /><br />
+        </small>
+      )}
+       <p className="text-lg sm:text-xl font-semibold leading-snug">
         {message}
       </p>
+
+      {createdAt && (
+        <small>
+          <br />
+          Posted at: {new Date(createdAt).toLocaleString()}
+        </small>
+      )}
+
+
+        <br/><LikeButton post={props.post} />
+
 
       {/* Meta with required labels for tests */}
       <div className="flex items-center justify-between text-sm muted">

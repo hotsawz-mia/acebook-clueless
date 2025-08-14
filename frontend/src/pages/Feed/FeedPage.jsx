@@ -44,7 +44,6 @@ export function FeedPage() {
           </div>
         </header>
       </div>
-
       <section className="max-w-3xl mx-auto px-4 py-6 space-y-5">
         {/* Mobile actions */}
         <div className="sm:hidden flex gap-3">
@@ -56,7 +55,6 @@ export function FeedPage() {
           </button>
           <LogoutButton className="btn-outline" />
         </div>
-
         {/* Feed */}
         <div className="space-y-4" role="feed" aria-busy={loading}>
           {loading ? (
