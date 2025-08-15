@@ -102,8 +102,12 @@ body { @apply bg-menace-ink text-menace-cream font-sans; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 1rem;      /* 8px 16px */
-    border-radius: 0.75rem;    /* 12px */
+    padding: 0.5rem 1rem;           /* 8px 16px */
+    border-radius: 0.75rem;         /* 12px: consistent across variants */
+    border: 1px solid transparent;  /* reserve border space for all variants */
+    box-sizing: border-box;         /* border doesn't change total size */
+    min-height: 40px;               /* uniform button height */
+    border-radius: 0.75rem;         /* enforce same radius */
     font-weight: 600;
     line-height: 1;
     text-decoration: none;     /* anchors shouldn't underline like links */
@@ -126,12 +130,14 @@ body { @apply bg-menace-ink text-menace-cream font-sans; }
 
   .btn-outline {
     color: #E4D6C3;
-    border: 1px solid rgba(228,214,195,0.25);
+    border-color: rgba(228,214,195,0.25); /* uses reserved border */
   }
   .btn-outline:hover {
     border-color: rgba(228,214,195,0.40);
     background: rgba(255,255,255,0.05);
   }
+
+  .btn-icon { width: 40px; min-width: 40px; padding: 0; }
 
 
   /* ---------- Forms ---------- */

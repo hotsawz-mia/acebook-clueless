@@ -11,6 +11,7 @@ export function UserProfilePage() {
 
   const [isFollowing, setIsFollowing] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [rowToggling, setRowToggling] = useState(new Set());
   const [following, setFollowing] = useState([]);
   const [followingLoading, setFollowingLoading] = useState(true);
 
@@ -90,6 +91,22 @@ export function UserProfilePage() {
       console.error("Follow toggle failed:", e);
     } finally {
       setToggling(false);
+    }
+  }
+
+  async function handleRowUnfollow(targetId) {
+    try {
+      setRowToggling(prev => new Set(prev).add(String(targetId)));
+      await unfollowUser(targetId, token);
+      setFollowing(prev => prev.filter(u => String(u._id) !== String(targetId)));
+    } catch (e) {
+      console.error("Row unfollow failed:", e);
+    } finally {
+      setRowToggling(prev => {
+        const next = new Set(prev);
+        next.delete(String(targetId));
+        return next;
+      });
     }
   }
 
@@ -187,15 +204,15 @@ export function UserProfilePage() {
         <User user={user} />
       </div>
 
-            {/* Following section */}
-            <section className="space-y-3">
+      {/* Entourage section */}
+      <section className="space-y-3">
         <h3 className="text-xl font-semibold">
-          Following
+          Entourage
         </h3>
         {followingLoading ? (
           <p className="text-zinc-400">Loading…</p>
         ) : following.length === 0 ? (
-          <p className="text-zinc-400">Not following anyone yet.</p>
+          <p className="text-zinc-400">Your entourage is empty.</p>
         ) : (
           <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
             {following.map((u) => (
@@ -209,7 +226,7 @@ export function UserProfilePage() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <Link to={`/users/${u._id}`} className="font-medium hover:underline">
+                    <Link to={`/user/${u._id}`} className="font-medium hover:underline">
                       {u.username || u.email}
                     </Link>
                     <span className="text-xs text-zinc-500">
@@ -217,9 +234,22 @@ export function UserProfilePage() {
                     </span>
                   </div>
                 </div>
-                <Link to={`/users/${u._id}`} className="btn-outline px-3 py-1 text-sm">
-                  View
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link to={`/user/${u._id}`} className="btn-outline px-3 py-1 text-sm">
+                    View
+                  </Link>
+                  {viewingOwn && (
+                    <button
+                      onClick={() => handleRowUnfollow(u._id)}
+                      disabled={rowToggling.has(String(u._id))}
+                      className="btn-outline px-2 py-1 text-sm"
+                      aria-label={`Unfollow ${u.username || u.email}`}
+                      title="Remove from entourage"
+                    >
+                      {rowToggling.has(String(u._id)) ? "…" : "✕"}
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
