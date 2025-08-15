@@ -15,10 +15,10 @@ function Post({ post }) {
     <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
 
        {(user || date) && (
-      <div className="flex justify-between items-center  text-sm text-gray-500">
+      <div className="flex justify-between items-center  text-sm text-gray-50">
         {user && (
           <span>
-            Posted by: {user.username ?? user.email}
+            Posted by: {user.username}
           </span>
         )}
         {date && (
