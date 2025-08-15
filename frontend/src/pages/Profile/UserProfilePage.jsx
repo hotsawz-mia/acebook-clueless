@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import User from "../../components/User";
 import LogoutButton from "../../components/LogoutButton";
-import { getUserById, followUser, unfollowUser, updateUser } from "../../services/users";
+import { getUserById, followUser, unfollowUser, updateUser, getFollowing } from "../../services/users";
 import { useToast } from "../../hooks/useToast";
 
 export function UserProfilePage() {
@@ -11,6 +11,8 @@ export function UserProfilePage() {
 
   const [isFollowing, setIsFollowing] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [following, setFollowing] = useState([]);
+  const [followingLoading, setFollowingLoading] = useState(true);
 
   const [editMode, setEditMode] = useState(false);
   const [usernameDraft, setUsernameDraft] = useState("");
@@ -24,29 +26,53 @@ export function UserProfilePage() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) return navigate("/login");
-
-    const targetUserId = userId || "me";
-    setLoading(true);
-
-    getUserById(targetUserId, token)
-      .then(async (data) => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    const target = userId || "me";
+    let cancelled = false;
+  
+    // profile
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await getUserById(target, token);
+        if (cancelled) return;
         setUser(data.user);
         setUsernameDraft(data.user.username || "");
-
         if (userId && userId !== currentUserId) {
           const me = await getUserById("me", token);
-          setIsFollowing(me.user.following?.map(String).includes(String(userId)));
+          if (!cancelled) {
+            setIsFollowing(me.user.following?.map(String).includes(String(userId)));
+          }
         } else {
           setIsFollowing(false);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
         if (String(err).includes("404")) setUser(null);
         else navigate("/login");
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+  
+    // following
+    (async () => {
+      try {
+        setFollowingLoading(true);
+        const f = await getFollowing(target, token);
+        if (!cancelled) setFollowing(f.users ?? []);
+      } catch (err) {
+        console.error("getFollowing failed:", err);
+        if (!cancelled) setFollowing([]);
+      } finally {
+        if (!cancelled) setFollowingLoading(false);
+      }
+    })();
+  
+    return () => { cancelled = true; };
   }, [navigate, userId, currentUserId, token]);
 
   async function handleFollowToggle() {
@@ -160,6 +186,45 @@ export function UserProfilePage() {
       <div className="space-y-4">
         <User user={user} />
       </div>
+
+            {/* Following section */}
+            <section className="space-y-3">
+        <h3 className="text-xl font-semibold">
+          Following
+        </h3>
+        {followingLoading ? (
+          <p className="text-zinc-400">Loading…</p>
+        ) : following.length === 0 ? (
+          <p className="text-zinc-400">Not following anyone yet.</p>
+        ) : (
+          <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
+            {following.map((u) => (
+              <li key={u._id} className="p-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-700 overflow-hidden">
+                    {u.profilePicture ? (
+                      <img src={u.profilePicture} alt="" className="w-8 h-8 rounded-full" />
+                    ) : (
+                      <div className="w-8 h-8 flex items-center justify-center">👤</div>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <Link to={`/users/${u._id}`} className="font-medium hover:underline">
+                      {u.username || u.email}
+                    </Link>
+                    <span className="text-xs text-zinc-500">
+                      Member since {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                    </span>
+                  </div>
+                </div>
+                <Link to={`/users/${u._id}`} className="btn-outline px-3 py-1 text-sm">
+                  View
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {viewingOwn && <LogoutButton />}
       <Toast />
