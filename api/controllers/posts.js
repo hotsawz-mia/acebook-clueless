@@ -5,7 +5,7 @@ async function getAllPosts(req, res) {
 
 
   try {
-    const posts = await Post.find().populate("user", "email");
+    const posts = await Post.find().populate("user", "username");
 
     const token = generateToken(req.user_id);
 
