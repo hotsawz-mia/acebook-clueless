@@ -14,19 +14,20 @@ function Post({ post }) {
   return (
     <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
 
-      {user && (
-        <small>
-          Posted by: {user.username ?? user.email}
-        </small>
-      )}
-      {date && (
-        <small>
-          <br />
-          Posted at: {date}
-          <br />
-          <br />
-        </small> 
-      )}
+       {(user || date) && (
+      <div className="flex justify-between items-center  text-sm text-gray-500">
+        {user && (
+          <span>
+            Posted by: {user.username ?? user.email}
+          </span>
+        )}
+        {date && (
+          <span>
+            Posted at: {date}
+          </span>
+        )}
+      </div>
+    )}
       <p className="text-lg sm:text-xl font-semibold leading-snug">
         {message ?? "(no message)"}
       </p>
