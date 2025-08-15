@@ -7,6 +7,13 @@ const Post = require("./models/post"); // adjust path if needed
 
 // Villain users
 const users = [
+    {
+    username: "Dave",
+    email: "dave@dave.com",
+    password: "dave",
+    bio: "Just a dude who was in the wrong place at the right time",
+    hobbies: ["Baking", "Watching paint dry", "Collecting thimbles"],
+  },
   {
     username: "Hades",
     email: "hades@underworld.com",
