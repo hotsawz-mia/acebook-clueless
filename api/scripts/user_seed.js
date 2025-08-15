@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { connectToDatabase } = require("./db"); // Assuming the connection is in db.js
-const User = require("./models/User"); // Adjust path if needed
+const User = require("./models/user"); // Adjust path if needed
 
 // Sample users to seed into the database
 const users = [
