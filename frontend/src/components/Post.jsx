@@ -13,27 +13,19 @@ function Post({ post }) {
 
   return (
     <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
+      {(user || date) && (
+        <div className="flex justify-between items-center  text-sm text-gray-500">
+          {user && <span>Posted by: {user.username ?? user.email}</span>}
+          {date && <span data-testid="post-date">Posted at: {date}</span>}
+        </div>
+      )}
 
-       {(user || date) && (
-      <div className="flex justify-between items-center  text-sm text-gray-500">
-        {user && (
-          <span>
-            Posted by: {user.username ?? user.email}
-          </span>
-        )}
-        {date && (
-          <span>
-            Posted at: {date}
-          </span>
-        )}
-      </div>
-    )}
       <p className="text-lg sm:text-xl font-semibold leading-snug">
         {message ?? "(no message)"}
       </p>
+
       <LikeButton post={post} />
       <CommentSection postId={safeId} />
-
     </article>
   );
 }
