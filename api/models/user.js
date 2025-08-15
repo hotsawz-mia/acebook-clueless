@@ -8,9 +8,26 @@ const UserSchema = new mongoose.Schema({
   backgroundPicture: { type: String }, // URL to image
   hobbies: [{ type: String }], // Array of hobby strings
   bio: { type: String },
+
+  // New fields for follow system
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    index: true,
+    default: [],
+  }],
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    index: true,
+    default: [],
+  }],
+
   createdAt: { type: Date, default: Date.now }
 });
 
-const User = mongoose.model("User", UserSchema);
+// const User = mongoose.model("User", UserSchema);
 
-module.exports = User;
+// module.exports = User;
+
+module.exports = mongoose.models.User || mongoose.model("User", UserSchema);

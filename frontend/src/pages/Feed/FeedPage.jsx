@@ -16,9 +16,15 @@ export function FeedPage() {
     return getPosts(token).then((data) => setPosts(data.posts ?? []));
   }, [navigate]);
 
-  useEffect(() => {
-    refresh().finally(() => setLoading(false));
-  }, [refresh]);
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        setLoading(false);
+        return;
+      }
+      refresh().finally(() => setLoading(false));
+    }, [refresh, navigate]);
 
   // Optional: fast-prepend created post if API returns it
   function handleCreated(created) {
