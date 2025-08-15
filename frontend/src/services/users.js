@@ -44,3 +44,20 @@ export async function unfollowUser(userId, token) {
   if (!res.ok) throw new Error("Failed to unfollow user");
   return res.json();
 }
+
+export async function updateUser(userId, updates, token) {
+  const res = await fetch(`${BACKEND_URL}/users/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updates),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to update user: ${res.status}`);
+  }
+
+  return res.json();
+}

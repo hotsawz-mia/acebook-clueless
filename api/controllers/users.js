@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/user");
 
 function create(req, res) {
   const { email, password, username } = req.body;
@@ -140,12 +140,38 @@ async function unfollowUser(req, res) {
   }
 }
 
+async function updateMe(req, res) {
+  try {
+    const id = req.user_id; // set by tokenChecker
+    const { username } = req.body;
+
+    if (!username || typeof username !== "string" || username.trim().length < 3) {
+      return res.status(400).json({ message: "Invalid username" });
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      id,
+      { $set: { username: username.trim() } },
+      { new: true, runValidators: true }
+    ).select("_id email username");
+
+    if (!updated) return res.status(404).json({ message: "User not found" });
+
+    return res.status(200).json({ user: updated, token: res.locals.token });
+  } catch (err) {
+    if (err?.code === 11000) return res.status(409).json({ message: "Username already taken" });
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
 const UsersController = {
   create,
   getUsers,
   getUserById,
   followUser,
   unfollowUser,
+  updateMe,
 };
 
 module.exports = UsersController;

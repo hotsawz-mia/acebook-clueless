@@ -1,4 +1,3 @@
-// api/tests/controllers/posts.test.js
 const request = require("supertest");
 const JWT = require("jsonwebtoken");
 
