@@ -52,7 +52,7 @@ export default function PostComposer({ onCreated, className = "" }) {
       `}</style>
 
       <label htmlFor="composer-message" className="block text-xl font-bold mb-2">
-        What's your diabolical plan?
+        Care to unveil your nefarious plans?
       </label>
 
       <textarea

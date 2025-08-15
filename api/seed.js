@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');  // Your Mongoose User model
+
 const Post = require('../models/post');  // Your Mongoose Post model
+
 
 async function seedDB() {
     try {
