@@ -11,7 +11,14 @@ const PostSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
   likes: {type: Number, default:0},
-  likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+  likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  comments: [
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    text: String,
+    createdAt: { type: Date, default: Date.now }
+  }
+]
 });
 
 // We use the Schema to create the Post model. Models are classes which we can

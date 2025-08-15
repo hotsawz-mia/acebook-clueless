@@ -37,6 +37,7 @@ export function FeedPage() {
 
   return (
     <main className="shell">
+
       {/* Sticky header with inline composer on desktop */}
       <div className="sticky top-[16px] z-10 px-4">
         <header className="card glass max-w-3xl mx-auto mt-2 p-2">
@@ -44,6 +45,25 @@ export function FeedPage() {
             <div className="sm:block w-[100%]">
               <PostComposer onCreated={handleCreated} />
             </div>
+
+      {/* Sticky header */}
+      <div className="sticky top-[64px] z-10 px-4">
+        <header className="card glass max-w-3xl mx-auto mt-6 p-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl">Board of Misdeeds</h2>
+            <p className="section-subtitle mt-1">
+              Latest activity from the Global Menace Network
+            </p>
+          </div>
+          <div className="hidden sm:flex items-center gap-3">
+            <button
+              className="btn-primary shadow-menace"
+              onClick={() => navigate("/create-post")}
+            >
+              Create New Post
+            </button>
+            <LogoutButton className="btn-ghost" />
+
           </div>
         </header>
       </div>
