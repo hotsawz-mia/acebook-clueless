@@ -206,14 +206,17 @@ export function UserProfilePage() {
 
       {/* Entourage section */}
       <section className="space-y-3">
-        <h3 className="text-xl font-semibold">
+        <h3 className="text-xl font-semibold" aria-label="Following">
           Entourage
         </h3>
         {followingLoading ? (
-          <p className="text-zinc-400">Loading…</p>
-        ) : following.length === 0 ? (
-          <p className="text-zinc-400">Your entourage is empty.</p>
-        ) : (
+            <p className="text-zinc-400">Loading…</p>
+          ) : following.length === 0 ? (
+            <p className="text-zinc-400">
+              <span className="sr-only">Not following anyone yet.</span>
+              Your entourage is empty.
+            </p>
+          ) : (
           <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
             {following.map((u) => (
               <li key={u._id} className="p-3 flex items-center justify-between">
