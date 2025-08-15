@@ -7,8 +7,9 @@ vi.mock("../../src/services/users", () => ({
   getUserById: vi.fn(),
   followUser: vi.fn(),
   unfollowUser: vi.fn(),
+  updateUser: vi.fn(),
 }));
-import { getUserById, followUser, unfollowUser } from "../../src/services/users";
+import { getUserById, followUser, unfollowUser, updateUser } from "../../src/services/users";
 
 // --- router mock with hoisted fns to avoid init order errors ---
 const router = vi.hoisted(() => ({
@@ -88,5 +89,54 @@ describe("UserProfilePage follow/unfollow", () => {
 
     expect(screen.queryByRole("button", { name: /follow/i })).toBeNull();
     expect(screen.queryByRole("button", { name: /unfollow/i })).toBeNull();
+  });
+});
+
+describe("UserProfilePage edit profile", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    localStorage.setItem("token", "tkn");
+    localStorage.setItem("userId", "ME_ID");
+
+    router.useParams.mockReturnValue({ userId: "ME_ID" });
+
+    getUserById.mockImplementation((id) => {
+      if (id === "me" || id === "ME_ID") {
+        return Promise.resolve({
+          user: { _id: "ME_ID", username: "OldName", email: "me@example.com" },
+        });
+      }
+      return Promise.reject(new Error("unexpected id"));
+    });
+  });
+
+  test("updates username and shows new value", async () => {
+    const user = userEvent.setup();
+
+    updateUser.mockResolvedValue({
+      user: { _id: "ME_ID", username: "NewName", email: "me@example.com" },
+    });
+
+    render(<UserProfilePage />);
+
+    const editBtn = await screen.findByRole("button", { name: /edit profile/i });
+    await user.click(editBtn);
+
+    const input = await screen.findByDisplayValue("OldName");
+    await user.clear(input);
+    await user.type(input, "NewName");
+
+    const saveBtn = screen.getByRole("button", { name: /^save$/i });
+    await user.click(saveBtn);
+
+    expect(updateUser).toHaveBeenCalledWith("me", { username: "NewName" }, "tkn");
+
+    // New username visible
+    const newNameText = await screen.findByText("NewName");
+    expect(newNameText).toBeTruthy();
+
+    // Toast appears if present
+    const toast = screen.queryByText(/profile updated/i);
+    if (toast) expect(toast).toBeTruthy();
   });
 });

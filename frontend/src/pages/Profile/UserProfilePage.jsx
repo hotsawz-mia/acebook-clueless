@@ -2,17 +2,26 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import User from "../../components/User";
 import LogoutButton from "../../components/LogoutButton";
-import { getUserById, followUser, unfollowUser } from "../../services/users"; 
+import { getUserById, followUser, unfollowUser, updateUser } from "../../services/users";
+import { useToast } from "../../hooks/useToast";
 
 export function UserProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isFollowing, setIsFollowing] = useState(false);           
-  const [toggling, setToggling] = useState(false);                 
+
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [toggling, setToggling] = useState(false);
+
+  const [editMode, setEditMode] = useState(false);
+  const [usernameDraft, setUsernameDraft] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const { showToast, Toast } = useToast();
+
   const navigate = useNavigate();
   const { userId } = useParams();
-  const currentUserId = localStorage.getItem("userId"); 
-  const token = localStorage.getItem("token");                     
+  const currentUserId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!token) return navigate("/login");
@@ -23,7 +32,8 @@ export function UserProfilePage() {
     getUserById(targetUserId, token)
       .then(async (data) => {
         setUser(data.user);
-        // compute following state only when viewing someone else
+        setUsernameDraft(data.user.username || "");
+
         if (userId && userId !== currentUserId) {
           const me = await getUserById("me", token);
           setIsFollowing(me.user.following?.map(String).includes(String(userId)));
@@ -39,7 +49,7 @@ export function UserProfilePage() {
       .finally(() => setLoading(false));
   }, [navigate, userId, currentUserId, token]);
 
-  async function handleFollowToggle() {                           
+  async function handleFollowToggle() {
     if (!userId || userId === currentUserId) return;
     try {
       setToggling(true);
@@ -54,6 +64,21 @@ export function UserProfilePage() {
       console.error("Follow toggle failed:", e);
     } finally {
       setToggling(false);
+    }
+  }
+
+  async function handleSaveProfile() {
+    try {
+      setSaving(true);
+      const updated = await updateUser("me", { username: usernameDraft }, token);
+      setUser(updated.user ?? { ...user, username: usernameDraft });
+      setEditMode(false);
+      showToast("Profile updated successfully!", "success");
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      showToast("Failed to update profile", "error");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -80,10 +105,9 @@ export function UserProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <h2 className="text-2xl font-semibold">
-        {viewingOwn ? "Your" : user.username || user.email}{" "}Profile
+        {viewingOwn ? "Your" : user.username || user.email} Profile
       </h2>
 
-      {/* Follow/Unfollow button when viewing someone else */}
       {!viewingOwn && (
         <div>
           <button
@@ -93,7 +117,43 @@ export function UserProfilePage() {
             className={isFollowing ? "btn-outline" : "btn-primary shadow-menace"}
           >
             {toggling ? "Working..." : isFollowing ? "Unfollow" : "Follow"}
-        </button>
+          </button>
+        </div>
+      )}
+
+      {viewingOwn && (
+        <div className="space-y-4">
+          {!editMode ? (
+            <button onClick={() => setEditMode(true)} className="btn-outline">
+              Edit profile
+            </button>
+          ) : (
+            <>
+              <label className="block">
+                <span className="text-sm font-medium">Username</span>
+                <input
+                  type="text"
+                  value={usernameDraft}
+                  onChange={(e) => setUsernameDraft(e.target.value)}
+                  className="input mt-1 w-full"
+                />
+              </label>
+              <div className="flex gap-2">
+                <button onClick={handleSaveProfile} disabled={saving} className="btn-primary">
+                  {saving ? "Saving..." : "Save"}
+                </button>
+                <button
+                  onClick={() => {
+                    setEditMode(false);
+                    setUsernameDraft(user.username || "");
+                  }}
+                  className="btn-outline"
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -102,6 +162,7 @@ export function UserProfilePage() {
       </div>
 
       {viewingOwn && <LogoutButton />}
+      <Toast />
     </div>
   );
 }
