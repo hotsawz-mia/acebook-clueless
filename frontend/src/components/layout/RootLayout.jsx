@@ -10,7 +10,8 @@ export default function RootLayout() {
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={logoUrl} alt="Global Menace Network" className="h-7 w-auto" />
-            <h1 className="text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
+            <h1 className="text-base tracking-wider font-semibold sm:hidden">GMN</h1>
+            <h1 className="hidden sm:block text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
           </div>
           <NavBar/>
         </div>

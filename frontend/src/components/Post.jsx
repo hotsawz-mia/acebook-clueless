@@ -2,7 +2,7 @@ import LikeButton from "./LikeButton.jsx";
 import CommentSection from "./CommentSection.jsx";
 
 function Post({ post }) {
-  if (!post) return null; // guard
+  if (!post) return null;
 
   const { message, createdAt, user, _id, id } = post;
   const safeId = _id ?? id ?? undefined;
@@ -13,6 +13,7 @@ function Post({ post }) {
 
   return (
     <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
+
       {user && (
         <small>
           Posted by: {user.username ?? user.email}
@@ -31,9 +32,6 @@ function Post({ post }) {
       </p>
       <LikeButton post={post} />
       <CommentSection postId={safeId} />
-
-
-      
 
     </article>
   );
