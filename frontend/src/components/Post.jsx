@@ -6,6 +6,7 @@ function Post({ post }) {
 
   const { message, createdAt, user, _id, id } = post;
   const safeId = _id ?? id ?? undefined;
+
   const date =
     createdAt && !Number.isNaN(new Date(createdAt))
       ? new Date(createdAt).toLocaleString()
@@ -16,7 +17,9 @@ function Post({ post }) {
       {(user || date) && (
         <div className="flex justify-between items-center  text-sm text-gray-500">
           {user && <span>Posted by: {user.username ?? user.email}</span>}
-          {date && <span data-testid="post-date">Posted at: {date}</span>}
+          {date && (
+            <span data-testid="post-date">Posted at: {date}</span>
+          )}
         </div>
       )}
 

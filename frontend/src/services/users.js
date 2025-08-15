@@ -1,4 +1,3 @@
-// src/services/users.js
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export async function getUsers(token) {
@@ -60,4 +59,14 @@ export async function updateUser(userId, updates, token) {
   }
 
   return res.json();
+}
+
+export async function getFollowing(userId, token) {
+  if (!token) throw new Error("No token provided");
+  const res = await fetch(`${BACKEND_URL}/users/${userId}/following`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Unable to fetch following");
+  return res.json(); // { users: [...] }
 }

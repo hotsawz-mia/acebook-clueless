@@ -1,23 +1,36 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { getUsers } from "../../services/users";
+import { getUsers, getUserById, followUser, unfollowUser } from "../../services/users";
 import LogoutButton from "../../components/LogoutButton";
 
 export function AllUsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [followingSet, setFollowingSet] = useState(new Set());
+  const [rowToggling, setRowToggling] = useState(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setLoading(true);
-      getUsers(token)
-        .then((data) => { setUsers(data.users); setLoading(false); })
-        .catch((err) => { console.error("Error fetching users:", err); setLoading(false); navigate("/login"); });
-    } else {
+    if (!token) {
       navigate("/login");
+      return;
     }
+  
+    setLoading(true);
+    Promise.all([getUsers(token), getUserById("me", token)])
+      .then(([data, me]) => {
+        const meId = String(me.user._id);
+        const filtered = (data.users || []).filter(u => String(u._id) !== meId);
+        setUsers(filtered);
+        const fset = new Set((me.user.following || []).map(String));
+        setFollowingSet(fset);
+      })
+      .catch((err) => {
+        console.error("Error fetching users:", err);
+        navigate("/login");
+      })
+      .finally(() => setLoading(false));
   }, [navigate]);
 
   if (loading) {
@@ -26,6 +39,33 @@ export function AllUsersPage() {
         <h2 className="text-2xl font-semibold">Loading Users...</h2>
       </div>
     );
+  }
+
+  async function toggleFollow(targetId) {
+    const id = String(targetId);
+    try {
+      setRowToggling(prev => new Set(prev).add(id));
+      const already = followingSet.has(id);
+      if (already) {
+        await unfollowUser(id, localStorage.getItem("token"));
+        setFollowingSet(prev => {
+          const n = new Set(prev);
+          n.delete(id);
+          return n;
+        });
+      } else {
+        await followUser(id, localStorage.getItem("token"));
+        setFollowingSet(prev => new Set(prev).add(id));
+      }
+    } catch (e) {
+      console.error("toggleFollow failed:", e);
+    } finally {
+      setRowToggling(prev => {
+        const n = new Set(prev);
+        n.delete(id);
+        return n;
+      });
+    }
   }
 
   return (
@@ -51,7 +91,18 @@ export function AllUsersPage() {
               </div>
 
               <div className="space-y-2">
-                <Link to={`/user/${user._id}`} className="btn-primary w-full text-center">View Profile</Link>
+                <div className="flex items-center gap-2">
+                  <Link to={`/user/${user._id}`} className="btn-primary flex-1 text-center">View Profile</Link>
+                  <button
+                    aria-label={followingSet.has(String(user._id)) ? "Unfollow" : "Follow"}
+                    title={followingSet.has(String(user._id)) ? "Unfollow" : "Follow"}
+                    className={`px-3 py-2 rounded-lg border ${followingSet.has(String(user._id)) ? "border-zinc-700" : "border-menace-cream/40"} hover:border-menace-cream/80 transition`}
+                    disabled={rowToggling.has(String(user._id))}
+                    onClick={() => toggleFollow(user._id)}
+                  >
+                    {rowToggling.has(String(user._id)) ? "…" : (followingSet.has(String(user._id)) ? "✓" : "+")}
+                  </button>
+                </div>
                 {user.bio && (
                   <p className="text-sm text-menace-cream/90 line-clamp-2">{user.bio}</p>
                 )}

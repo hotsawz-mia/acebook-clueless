@@ -165,6 +165,23 @@ async function updateMe(req, res) {
   }
 }
 
+async function getFollowing(req, res) {
+  try {
+    const paramId = req.params.userId;
+    const id = paramId === "me" ? req.user_id : paramId;
+
+    const user = await User.findById(id)
+      .populate("following", "username email profilePicture createdAt");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+    return res.json({ users: user.following || [] });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
+
 const UsersController = {
   create,
   getUsers,
@@ -172,6 +189,7 @@ const UsersController = {
   followUser,
   unfollowUser,
   updateMe,
+  getFollowing,
 };
 
 module.exports = UsersController;
