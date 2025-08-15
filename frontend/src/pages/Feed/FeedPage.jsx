@@ -28,7 +28,7 @@ export function FeedPage() {
       <div className="sticky top-[64px] z-10 px-4">
         <header className="card glass max-w-3xl mx-auto mt-6 p-5 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl">Menacing Posts</h2>
+            <h2 className="text-2xl">Board of Misdeeds</h2>
             <p className="section-subtitle mt-1">
               Latest activity from the Global Menace Network
             </p>

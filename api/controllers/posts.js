@@ -54,11 +54,30 @@ async function likePost(req, res) {
   }
 
 }
+async function getComments(req, res) {
+  const post = await Post.findById(req.params.id).populate("comments.user", "email");
+  if (!post) return res.status(404).json({ message: "Post not found" });
+  res.json({ comments: post.comments });
+}
+
+async function addComment(req, res) {
+  const post = await Post.findById(req.params.id).populate("comments.user", "email");
+  if (!post) return res.status(404).json({ message: "Post not found" });
+
+  post.comments.push({ user: req.user_id, text: req.body.text });
+  await post.save();
+  await post.populate("comments.user", "email");
+
+  res.json({ comments: post.comments });
+}
+
 
 const PostsController = {
   getAllPosts: getAllPosts,
   createPost: createPost,
   likePost: likePost,
+  getComments: getComments,
+  addComment: addComment,
 };
 
 module.exports = PostsController;
