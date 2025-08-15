@@ -16,17 +16,16 @@ export function FeedPage() {
     return getPosts(token).then((data) => setPosts(data.posts ?? []));
   }, [navigate]);
 
-    useEffect(() => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        setLoading(false);
-        return;
-      }
-      refresh().finally(() => setLoading(false));
-    }, [refresh, navigate]);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      setLoading(false);
+      return;
+    }
+    refresh().finally(() => setLoading(false));
+  }, [refresh, navigate]);
 
-  // Optional: fast-prepend created post if API returns it
   function handleCreated(created) {
     if (created?._id) {
       setPosts((prev) => [created, ...prev]);
@@ -37,27 +36,25 @@ export function FeedPage() {
 
   return (
     <main className="shell">
+      {/* board info */}
+      <div className="hidden sm:flex flex-col items-center gap-1">
+        <h2 className="text-2xl">Board of Misdeeds</h2>
+        <p className="section-subtitle mt-1">
+          Latest activity from the Global Menace Network
+        </p>
+      </div>
 
-        {/* board info or activity*/}
-          <div className="hidden sm:flex flex-col items-center gap-1">
-            <h2 className="text-2xl">Board of Misdeeds</h2>
-            <p className="section-subtitle mt-1">
-              Latest activity from the Global Menace Network
-            </p>
+      {/* Sticky header with inline composer */}
+      <div className="sticky top-4 z-10 px-4">
+        <header className="card glass max-w-3xl mx-auto mt-2 p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <PostComposer onCreated={handleCreated} />
+            </div>
           </div>
-
-      {/* Sticky header with inline composer on desktop */}
-      <div>
-        <header className="card glass max-w-3xl mx-auto mt-6 p-5 flex items-start justify-between gap-4">
-          
-          {/* Left section: Composer */}
-          <div className="flex-1 min-w-0">
-            <PostComposer onCreated={handleCreated} />
-          </div>
-          
-
         </header>
       </div>
+
       <section className="max-w-3xl mx-auto px-4 py-6 space-y-5">
         {/* Feed */}
         <div className="space-y-4" role="feed" aria-busy={loading}>
