@@ -91,13 +91,15 @@ export default function PostComposer({ onCreated, className = "" }) {
         }
       `}</style>
 
+
       <label
         htmlFor="composer-message"
         className={`block font-bold mb-2 transition-all duration-200 ${
           compact ? "text-base opacity-80" : "text-xl opacity-100"
         }`}
       >
-        What's your diabolical plan?
+
+        Care to unveil your nefarious plans?
 
       </label>
 
