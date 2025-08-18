@@ -3,6 +3,7 @@ import { createPost } from "../services/posts";
 
 export default function PostComposer({ onCreated, className = "" }) {
   const [message, setMessage] = useState("");
+  const [photo, setPhoto] = useState(null);  // New: photo file state
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [celebrating, setCelebrating] = useState(false);
@@ -32,10 +33,12 @@ export default function PostComposer({ onCreated, className = "" }) {
       Array.from({ length: 20 }).map((_, i) => ({
         id: i,
         glyph: ["💥", "😼", "🎉", "🧪", "💣", "⚡️", "🕶️", "🔥"][i % 8],
+
         x: (Math.random() - 0.5) * 400,
         y: (Math.random() - 0.7) * 400,
         rot: Math.random() * 720 - 360,
         dur: 800 + Math.random() * 1200,
+
       })),
     []
   );
@@ -43,14 +46,26 @@ export default function PostComposer({ onCreated, className = "" }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    if (!message.trim()) return setError("Message is required.");
+
+    if (!message.trim() && !photo) {
+      return setError("Message or photo is required.");
+    }
+
     try {
       setSubmitting(true);
       const token = localStorage.getItem("token");
-      const created = await createPost(message.trim(), token);
+
+      // Use FormData to send text + file
+      const formData = new FormData();
+      formData.append("message", message.trim());
+      if (photo) formData.append("photo", photo);
+
+      const created = await createPost(formData, token);  // <-- Updated to send FormData
+
       setCelebrating(true);
       setTimeout(() => setCelebrating(false), 900);
       setMessage("");
+      setPhoto(null);  // Clear photo input
       onCreated?.(created);
     } catch (err) {
       console.error(err);
@@ -61,6 +76,7 @@ export default function PostComposer({ onCreated, className = "" }) {
   }
 
   return (
+
     <form
       onSubmit={handleSubmit}
       className={`p-4 relative ${className}`}
@@ -82,7 +98,9 @@ export default function PostComposer({ onCreated, className = "" }) {
           compact ? "text-base opacity-80" : "text-xl opacity-100"
         }`}
       >
+
         Care to unveil your nefarious plans?
+
       </label>
 
       {/* Textarea height animates via min-height */}
@@ -94,12 +112,30 @@ export default function PostComposer({ onCreated, className = "" }) {
         onBlur={() => setFocused(false)}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Describe what's on your menacing mind"
+
         className="input w-full resize-y"
         style={{
           minHeight: compact ? 44 : 160, // px
           transition: "min-height 220ms ease, box-shadow 200ms ease",
         }}
       />
+
+        className="input w-full resize-y sm:rows-6 rows-8"
+      />
+
+      {/* New photo input */}
+      <div className="mt-3">
+        <label htmlFor="composer-photo" className="block font-semibold mb-1">Attach a photo:</label>
+        <input
+          id="composer-photo"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setPhoto(e.target.files[0])}
+          disabled={submitting}
+        />
+        {photo && <p className="mt-1 text-sm">Selected file: {photo.name}</p>}
+      </div>
+
 
       {/* Counter + errors (fade/slide & height collapse) */}
       <div
@@ -134,8 +170,8 @@ export default function PostComposer({ onCreated, className = "" }) {
         <button
           type="button"
           className="btn-ghost"
-          onClick={() => setMessage("")}
-          disabled={submitting || message.length === 0}
+          onClick={() => { setMessage(""); setPhoto(null); }}
+          disabled={submitting && message.length === 0 && !photo}
         >
           Clear
         </button>
@@ -143,7 +179,7 @@ export default function PostComposer({ onCreated, className = "" }) {
           type="submit"
           id="submit"
           role="submit-button"
-          disabled={submitting || message.trim().length === 0}
+          disabled={submitting || (!message.trim() && !photo)}
           className="btn-primary shadow-menace disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting ? "Submitting..." : "Post"}

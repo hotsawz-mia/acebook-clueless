@@ -44,16 +44,20 @@ export function FeedPage() {
         </p>
       </div>
 
+
       {/* Sticky header with inline composer */}
       <div className="sticky top-4 z-10 px-4">
         <header className="card glass max-w-3xl mx-auto mt-2 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
+
               <PostComposer onCreated={handleCreated} />
             </div>
           </div>
         </header>
+
       </div>
+
 
       <section className="max-w-3xl mx-auto px-4 py-6 space-y-5">
         {/* Feed */}

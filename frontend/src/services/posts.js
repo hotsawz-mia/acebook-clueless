@@ -19,16 +19,31 @@ export async function getPosts(token) {
   return data;
 }
 
-
-export async function createPost(message, token) {
-  const response = await fetch(`${BACKEND_URL}/posts`, {
+/**
+ * Creates a post.
+ * If `data` is a FormData instance, send it directly (for photo upload).
+ * Otherwise, treat `data` as message string and send JSON.
+ *
+ * @param {string|FormData} data - Message string or FormData with message + photo
+ * @param {string} token - Authorization token
+ */
+export async function createPost(data, token) {
+  let options = {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ message }),
-  });
+  };
+
+  if (data instanceof FormData) {
+    options.body = data;
+    // Don't set Content-Type with FormData — browser sets it automatically
+  } else {
+    options.headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify({ message: data });
+  }
+
+  const response = await fetch(`${BACKEND_URL}/posts`, options);
 
   if (!response.ok) {
     throw new Error("Failed to create post");
