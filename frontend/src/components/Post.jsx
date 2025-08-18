@@ -22,6 +22,22 @@ function Post({ post }) {
         </div>
       )}
 
+
+       {(user || date) && (
+      <div className="flex justify-between items-center  text-sm text-gray-50">
+        {user && (
+          <span>
+            Posted by: {user.username}
+          </span>
+        )}
+        {date && (
+          <span>
+            Posted at: {date}
+          </span>
+        )}
+      </div>
+    )}
+
       <p className="text-lg sm:text-xl font-semibold leading-snug">
         {message ?? "(no message)"}
       </p>

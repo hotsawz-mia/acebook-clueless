@@ -4,8 +4,8 @@ const path = require("path");
 
 async function getAllPosts(req, res) {
   try {
-    // Populate user info (username or email)
-    const posts = await Post.find().populate("user", "username email");
+
+    const posts = await Post.find().populate("user", "username");
 
     const token = generateToken(req.user_id);
 
