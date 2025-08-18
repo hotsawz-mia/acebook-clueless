@@ -4,12 +4,12 @@ import { createPost } from "../../services/posts";
 
 export function CreatePostPage() {
   const [message, setMessage] = useState("");
+  const [photo, setPhoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [celebrating, setCelebrating] = useState(false);
   const navigate = useNavigate();
 
-  // Auth gate like FeedPage
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) navigate("/login");
@@ -23,9 +23,12 @@ export function CreatePostPage() {
     try {
       setSubmitting(true);
       const token = localStorage.getItem("token");
-      await createPost(message.trim(), token);
+      const formData = new FormData();
+      formData.append("message", message.trim());
+      if (photo) formData.append("photo", photo);
 
-      // Trigger fun effect, then navigate
+      await createPost(formData, token);
+
       setCelebrating(true);
       setTimeout(() => navigate("/posts"), 900);
     } catch (err) {
@@ -41,8 +44,8 @@ export function CreatePostPage() {
       Array.from({ length: 20 }).map((_, i) => ({
         id: i,
         glyph: ["💥", "😼", "🎉", "🧪", "💣", "⚡️", "🕶️", "🔥"][i % 8],
-        x: (Math.random() - 0.5) * 1800, 
-        y: (Math.random() - 0.7) * 1800, 
+        x: (Math.random() - 0.5) * 1800,
+        y: (Math.random() - 0.7) * 1800,
         rot: Math.random() * 720 - 360,
         dur: 800 + Math.random() * 8000,
       })),
@@ -51,7 +54,6 @@ export function CreatePostPage() {
 
   return (
     <main className="shell relative">
-      {/* Local keyframes for the burst */}
       <style>{`
         @keyframes menace-pop {
           0%   { transform: translate(0,0) scale(0.6) rotate(0deg); opacity: 0; }
@@ -64,7 +66,6 @@ export function CreatePostPage() {
         }
       `}</style>
 
-      {/* Sticky header */}
       <div className="sticky top-[64px] z-10 px-4">
         <header className="card glass max-w-3xl mx-auto mt-6 p-5 flex items-center justify-between">
           <div>
@@ -73,7 +74,6 @@ export function CreatePostPage() {
               Share your latest scheme with the network
             </p>
           </div>
-          {/* Removed Logout */}
           <button
             type="button"
             className="btn-ghost"
@@ -85,7 +85,6 @@ export function CreatePostPage() {
       </div>
 
       <section className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        {/* Mobile actions (no logout) */}
         <div className="sm:hidden flex gap-3">
           <button
             type="button"
@@ -96,12 +95,14 @@ export function CreatePostPage() {
           </button>
         </div>
 
-        {/* Form card */}
-        <form onSubmit={handleSubmit} className="card p-6 space-y-4 relative overflow-hidden">
+        <form
+          onSubmit={handleSubmit}
+          className="card p-6 space-y-4 relative overflow-hidden"
+          encType="multipart/form-data"
+        >
           <label htmlFor="message" className="block text-sm font-medium">
             Message
           </label>
-
           <textarea
             id="message"
             value={message}
@@ -112,12 +113,22 @@ export function CreatePostPage() {
             className="input w-full resize-y"
           />
 
+          <label htmlFor="photo" className="block text-sm font-medium mt-4">
+            Photo (optional)
+          </label>
+          <input
+            type="file"
+            id="photo"
+            accept="image/*"
+            onChange={(e) => setPhoto(e.target.files[0])}
+            className="block"
+          />
+
           <div className="flex items-center justify-between text-sm">
             <span className="muted">{280 - message.length} characters left</span>
             {error && <span className="text-red-400">{error}</span>}
           </div>
 
-          {/* Right-aligned actions */}
           <div className="flex items-center gap-3 justify-end">
             <button
               type="button"
@@ -136,7 +147,6 @@ export function CreatePostPage() {
             />
           </div>
 
-          {/* Menacing burst overlay */}
           {celebrating && (
             <div
               aria-hidden="true"
@@ -152,9 +162,6 @@ export function CreatePostPage() {
                       top: "50%",
                       transform: "translate(-50%, -50%)",
                       animation: `menace-pop ${p.dur}ms ease-out forwards`,
-                      // final transform vector
-                      // convert x%/y% to translate relative to wrapper
-                      // also add rotation
                       ["--end-tf"]: `translate(${p.x}%, ${p.y}%)`,
                       ["--rot"]: `${p.rot}deg`,
                     }}

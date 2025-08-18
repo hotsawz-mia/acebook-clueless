@@ -1,19 +1,21 @@
 const Post = require("../models/post");
 const { generateToken } = require("../lib/token");
+const path = require("path");
 
 async function getAllPosts(req, res) {
-
-
   try {
-    const posts = await Post.find().populate("user", "email");
+    // Populate user info (username or email)
+    const posts = await Post.find().populate("user", "username email");
 
     const token = generateToken(req.user_id);
 
+    // Add likedByUser flag and ensure photoUrl is included
     const postsWithLikedFlag = posts.map(post => ({
       ...post.toObject(),
       likedByUser: post.likedBy.some(
         id => id.toString() === req.user_id
-      )
+      ),
+      // photoUrl is included automatically if in schema
     }));
 
     res.status(200).json({ posts: postsWithLikedFlag, token });
@@ -23,15 +25,38 @@ async function getAllPosts(req, res) {
 }
 
 async function createPost(req, res) {
-  const post = new Post({
+  try {
+    const { message } = req.body;
+    const userId = req.user_id;
 
-  message: req.body.message,
-  user: req.user_id, // Save the user ID
-});
-await post.save();
+    if (!message?.trim() && !req.file) {
+      return res.status(400).json({ message: "Message or photo required" });
+    }
 
-  const token = generateToken(req.user_id);
-  res.status(201).json({ message: "Post created", token });
+    let photoUrl = null;
+    if (req.file) {
+      // Construct URL relative to /uploads
+      photoUrl = `/uploads/${req.file.filename}`;
+    }
+
+    const post = new Post({
+      message: message?.trim(),
+      user: userId,
+      photoUrl,
+      createdAt: new Date(),
+      likedBy: [],
+      likes: 0,
+      comments: [],
+    });
+
+    await post.save();
+
+    const token = generateToken(userId);
+    res.status(201).json({ message: "Post created", token, post });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to create post" });
+  }
 }
 
 async function likePost(req, res) {
@@ -40,20 +65,20 @@ async function likePost(req, res) {
     const userId = req.user_id;
 
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({message: "Post not found"});
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
     if (post.likedBy.includes(userId)) {
-      return res.status(409).json({message: "You have already liked this post"});
+      return res.status(409).json({ message: "You have already liked this post" });
     }
     post.likes += 1;
-    post.likedBy.push(userId)
+    post.likedBy.push(userId);
     await post.save();
-    res.json({likes: post.likes});
+    res.json({ likes: post.likes });
   } catch (error) {
-      return res.status(500).json({message: error.message});
+    return res.status(500).json({ message: error.message });
   }
-
 }
+
 async function getComments(req, res) {
   const post = await Post.findById(req.params.id).populate("comments.user", "email");
   if (!post) return res.status(404).json({ message: "Post not found" });
@@ -71,13 +96,12 @@ async function addComment(req, res) {
   res.json({ comments: post.comments });
 }
 
-
 const PostsController = {
-  getAllPosts: getAllPosts,
-  createPost: createPost,
-  likePost: likePost,
-  getComments: getComments,
-  addComment: addComment,
+  getAllPosts,
+  createPost,
+  likePost,
+  getComments,
+  addComment,
 };
 
 module.exports = PostsController;

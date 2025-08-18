@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path");
 
 const usersRouter = require("./routes/users");
 const postsRouter = require("./routes/posts");
@@ -10,12 +11,14 @@ const tokenChecker = require("./middleware/tokenChecker");
 const app = express();
 
 // Allow requests from any client
-// docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-// docs: https://expressjs.com/en/resources/middleware/cors.html
 app.use(cors());
 
 // Parse JSON request bodies, made available on `req.body`
 app.use(bodyParser.json());
+
+// Serve uploaded images statically from /uploads
+// This lets clients fetch photos via URLs like /uploads/filename.jpg
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API Routes
 app.use("/users", usersRouter);
