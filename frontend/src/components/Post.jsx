@@ -9,7 +9,7 @@ function Post({ post }) {
   const { message, createdAt, user, _id, id, photoUrl } = post;
   const safeId = _id ?? id ?? undefined;
   const date =
-    createdAt && !Number.isNaN(new Date(createdAt))
+    createdAt && !isNaN(new Date(createdAt).getTime())
       ? new Date(createdAt).toLocaleString()
       : null;
 
