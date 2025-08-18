@@ -143,17 +143,23 @@ async function unfollowUser(req, res) {
 async function updateMe(req, res) {
   try {
     const id = req.user_id; // set by tokenChecker
-    const { username } = req.body;
+    const { username, bio, hobbies } = req.body;  // changed to edit profile
 
     if (!username || typeof username !== "string" || username.trim().length < 3) {
       return res.status(400).json({ message: "Invalid username" });
     }
-
-    const updated = await User.findByIdAndUpdate(
+       // changed to edit profile
+    const updates = {};
+      if (username) updates.username = username.trim();
+      if (bio !== undefined) updates.bio = bio.trim();
+      if (hobbies !== undefined) updates.hobbies = hobbies;
+    
+      const updated = await User.findByIdAndUpdate(
       id,
-      { $set: { username: username.trim() } },
+      { $set: updates },    // changed to edit profile
+
       { new: true, runValidators: true }
-    ).select("_id email username");
+    ).select("_id email username bio hobbies");
 
     if (!updated) return res.status(404).json({ message: "User not found" });
 
