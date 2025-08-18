@@ -78,7 +78,12 @@ function CommentSection({ postId }) {
             />
             <button
             type="submit"
-            className="btn-primary  text-white px-4 py-2 rounded-lg text-sm hover:bg-black hover:text-red-500"
+            disabled={!newComment.trim()} // disables button if input is empty or only spaces
+            className={`px-4 py-2 rounded-lg text-sm transition 
+                ${newComment.trim() 
+                ? "btn-primary text-white hover:bg-black hover:text-red-500" 
+                : "btn-primary text-white disabled:opacity-60 cursor-not-allowed"}`}
+            
             >
             Submit
             </button>
