@@ -12,8 +12,7 @@ export async function login(email, password) {
   if (response.status === 201) {
     const data = await response.json();
     console.log("LOGIN RESPONSE:", data);
-    return data.token;                    // keep returning token for now
-    // return { token: data.token, user: data.user };
+    return { token: data.token, user: data.user };  // updated line
   } else {
     throw new Error(
       `Received status ${response.status} when logging in. Expected 201`

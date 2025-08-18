@@ -9,11 +9,21 @@ export default function RootLayout() {
       <header className="border-b border-white/10">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logoUrl} alt="Global Menace Network" className="h-7 w-auto" />
+            <Link to="/">
+              <img
+                src={logoUrl}
+                alt="Global Menace Network"
+                className="h-7 w-auto transition-all duration-200 hover:scale-105 hover:brightness-125 hover:saturate-200"
+              />
+            </Link>
+
             <h1 className="text-base tracking-wider font-semibold sm:hidden">GMN</h1>
-            <h1 className="hidden sm:block text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
+            <h1 className="hidden sm:block text-base tracking-wider font-semibold">
+              GLOBAL MENACE NETWORK
+            </h1>
           </div>
-          <NavBar/>
+
+          <NavBar />
         </div>
       </header>
 
