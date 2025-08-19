@@ -261,7 +261,7 @@ export function UserProfilePage() {
                 <img
                   src={profilePicturePreview}
                   alt="Preview"
-                  className="input mt-1 w-full"
+                  className="mt-1 w-24 h-24 object-cover rounded-full"
                 />
               )}
 
@@ -289,12 +289,12 @@ export function UserProfilePage() {
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="w-80 mx-auto space-y-4 ml-0">
         <User user={user} />
       </div>
 
       {/* Entourage section */}
-      <section className="space-y-3">
+      <section className="w-80 mx-auto space-y-3 ml-0">
         <h3 className="text-xl font-semibold" aria-label="Following">
           Entourage
         </h3>
