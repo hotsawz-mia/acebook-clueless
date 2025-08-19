@@ -162,18 +162,27 @@ async function updateMe(req, res) {
           updates.hobbies = []; // fallback if bad JSON
         }
       }
-      if (req.file) {
+      const profile = req.files?.profilePicture?.[0];
+      const background = req.files?.backgroundPicture?.[0];
+
+      if (profile) {
         updates.profilePicture = base
-          ? `${base}/uploads/${req.file.filename}`
-          : `/uploads/${req.file.filename}`;
-        }
+          ? `${base}/uploads/${profile.filename}`
+          : `/uploads/${profile.filename}`;
+      }
+
+      if (background) {
+        updates.backgroundPicture = base
+          ? `${base}/uploads/${background.filename}`
+          : `/uploads/${background.filename}`;
+      }
         
       const updated = await User.findByIdAndUpdate(
       id,
       { $set: updates },    // changed to edit profile
 
       { new: true, runValidators: true }
-    ).select("_id email username bio hobbies profilePicture");
+    ).select("_id email username bio hobbies profilePicture backgroundPicture");
 
     if (!updated) return res.status(404).json({ message: "User not found" });
 
