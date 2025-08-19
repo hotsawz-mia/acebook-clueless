@@ -119,7 +119,6 @@ export default function PostComposer({ onCreated, className = "" }) {
           transition: "min-height 220ms ease, box-shadow 200ms ease",
         }}
       />
-      
       {/* New photo input */}
       <div className="mt-3">
         <label htmlFor="composer-photo" className="block font-semibold mb-1">Attach a photo:</label>
