@@ -21,7 +21,8 @@ export function UserProfilePage() {
   const [hobbiesDraft, setHobbiesDraft] = useState(""); {/* added this for edit Hobbies */}
   const [profilePictureDraft, setProfilePictureDraft] = useState(null); {/* added this for edit profilepic */}
   const [profilePicturePreview, setProfilePicturePreview] = useState("");
-
+  const [backgroundPictureDraft, setBackgroundPictureDraft] = useState(null); {/* added this for edit profilepic */}
+  const [backgroundPicturePreview, setBackgroundPicturePreview] = useState("");
   const [saving, setSaving] = useState(false);
 
   const { showToast, Toast } = useToast();
@@ -131,6 +132,9 @@ export function UserProfilePage() {
         if (profilePictureDraft) {
           formData.append("profilePicture", profilePictureDraft); // must match multer field
         }
+        if (backgroundPictureDraft) {
+          formData.append("backgroundPicture", backgroundPictureDraft); // must match multer field
+        }
 
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me`, {
         method: "PUT",
@@ -148,6 +152,7 @@ export function UserProfilePage() {
         bio: bioDraft,
         hobbies: hobbiesArray,
         profilePicture: updated.user?.profilePicture || user.profilePicture,
+        backgroundPicture: updated.user?.backgroundPicture || user.backgroundPicture,
       });
       setEditMode(false);
       showToast("Profile updated successfully!", "success");
@@ -188,7 +193,7 @@ export function UserProfilePage() {
     userId === currentUserId || (!userId && user._id === currentUserId);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <h2 className="text-2xl font-semibold">
         {viewingOwn ? "Your" : user.username || user.email} Profile
       </h2>
@@ -261,7 +266,29 @@ export function UserProfilePage() {
                 <img
                   src={profilePicturePreview}
                   alt="Preview"
+                  className="mt-1 w-24 h-24 object-cover rounded-full"
+                />
+              )}
+
+              <label className="block">
+                <span className="text-sm font-medium">Picture of Lair</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setBackgroundPictureDraft(file);
+                    if (file) setBackgroundPicturePreview(URL.createObjectURL(file));
+                  }}
                   className="input mt-1 w-full"
+                />
+              </label>
+                      {/* added the profile pic above and below */}
+              {backgroundPicturePreview && (
+                <img
+                  src={backgroundPicturePreview}
+                  alt="Preview"
+                  className="mt-1 w-24 h-24 object-cover"
                 />
               )}
 
@@ -277,7 +304,9 @@ export function UserProfilePage() {
                     setBioDraft(user.bio || "");
                     setHobbiesDraft(Array.isArray(user.hobbies) ? user.hobbies.join(", ") : (user.hobbies || ""));
                     setProfilePictureDraft(null); // reset file
-                    setProfilePicturePreview(user.profilePicture || ""); // reset to stored image
+                    setProfilePicturePreview(user.profilePicture || ""); 
+                    setBackgroundPictureDraft(null); // reset file
+                    setBackgroundPicturePreview(user.profilePicture || "");// reset to stored image
                   }}
                   className="btn-outline"
                 >
@@ -289,12 +318,28 @@ export function UserProfilePage() {
         </div>
       )}
 
-      <div className="space-y-4">
-        <User user={user} />
+      <div className="flex items-start gap-6 ml-0 w-full">
+        {/* Left side */}
+        <div className="w-200">
+          <User user={user} />
+        </div>
+
+        {/* Right side */}
+        
+          {user.backgroundPicture && (
+            <div className="w-300 h-50 rounded-md overflow-hidden border border-zinc-800">
+            <img
+              src={`${import.meta.env.VITE_BACKEND_URL}${user.backgroundPicture}?t=${Date.now()}`}
+              alt="Background"
+              className="w-full h-full object-cover"
+            />
+            </div>
+          )}
+
       </div>
 
       {/* Entourage section */}
-      <section className="space-y-3">
+      <section className="w-80 mx-auto space-y-3 ml-0">
         <h3 className="text-xl font-semibold" aria-label="Following">
           Entourage
         </h3>
@@ -306,7 +351,7 @@ export function UserProfilePage() {
               Your entourage is empty.
             </p>
           ) : (
-         <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
+        <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
           {following.map((u) => {
             const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
             const profilePicUrl = u.profilePicture

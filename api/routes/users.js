@@ -11,7 +11,13 @@ router.post("/", UsersController.create);
 router.get("/", tokenChecker, UsersController.getUsers);
 
 // profile pic
-router.put("/me", tokenChecker, upload.single("profilePicture"), UsersController.updateMe);
+router.put("/me", tokenChecker, upload.fields ([
+        { name: "profilePicture", maxCount: 1 },
+        { name: "backgroundPicture", maxCount: 1 }
+    ]),
+    UsersController.updateMe
+);
+
 
 router.post("/:userId/follow", tokenChecker, UsersController.followUser);
 router.delete("/:userId/follow", tokenChecker, UsersController.unfollowUser);
