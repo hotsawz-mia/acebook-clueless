@@ -18,6 +18,7 @@ export function LoginPage() {
       // 1) login -> token
       const token = await login(email, password);
       localStorage.setItem("token", token);
+      window.dispatchEvent(new Event("storage")); 
   
       // 2) fetch /me with the token -> userId
       const me = await getUserById("me", token); // expects { user: { _id, ... } }

@@ -1,9 +1,19 @@
+import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import logoUrl from "../../assets/Favicon.png"; 
 import NavBar from "../../components/NavBar";
 
 export default function RootLayout() {
-  return (
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+  const handleStorage = () => setIsLoggedIn(!!localStorage.getItem("token"));
+  setIsLoggedIn(!!localStorage.getItem("token"));
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
+}, []);
+
+    return (
     <div className="min-h-dvh bg-menace-ink text-menace-cream">
       {/* Header */}
       <header className="border-b border-white/10">
@@ -13,7 +23,7 @@ export default function RootLayout() {
             <h1 className="text-base tracking-wider font-semibold sm:hidden">GMN</h1>
             <h1 className="hidden sm:block text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
           </div>
-          <NavBar/>
+            <NavBar isLoggedIn={isLoggedIn} />
         </div>
       </header>
 
