@@ -1,16 +1,25 @@
 function User({ user }) {
   const currentUserId = localStorage.getItem("userId");
 
+  // 👇 Make sure we use the backend URL for images
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const profilePicUrl =
+    user.profilePicture && user.profilePicture.startsWith("http")
+      ? user.profilePicture
+      : user.profilePicture
+      ? `${BACKEND_URL}${user.profilePicture}`
+      : null;
+
   return (
     <article className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
       {/* Profile Header */}
       <div className="flex items-center space-x-4 mb-4">
-        <div className="w-16 h-16 bg-zinc-700 rounded-full flex items-center justify-center">
-          {user.profilePicture ? (
+        <div className="w-16 h-16 bg-zinc-700 rounded-full flex items-center justify-center overflow-hidden">
+          {profilePicUrl ? (
             <img
-              src={user.profilePicture}
+              src={profilePicUrl}
               alt="Profile"
-              className="w-16 h-16 rounded-full"
+              className="w-16 h-16 rounded-full object-cover"
             />
           ) : (
             <span className="text-2xl">👤</span>

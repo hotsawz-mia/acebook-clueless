@@ -1,5 +1,7 @@
 const User = require("../models/user");
 
+
+
 function create(req, res) {
   const { email, password, username } = req.body;
 
@@ -148,18 +150,30 @@ async function updateMe(req, res) {
     if (!username || typeof username !== "string" || username.trim().length < 3) {
       return res.status(400).json({ message: "Invalid username" });
     }
+    const base = (process.env.BACKEND_URL || "").replace(/\/$/, "");
        // changed to edit profile
     const updates = {};
       if (username) updates.username = username.trim();
       if (bio !== undefined) updates.bio = bio.trim();
-      if (hobbies !== undefined) updates.hobbies = hobbies;
-    
+      if (hobbies !== undefined) {
+        try {
+          updates.hobbies = Array.isArray(hobbies) ? hobbies : JSON.parse(hobbies);
+        } catch {
+          updates.hobbies = []; // fallback if bad JSON
+        }
+      }
+      if (req.file) {
+        updates.profilePicture = base
+          ? `${base}/uploads/${req.file.filename}`
+          : `/uploads/${req.file.filename}`;
+        }
+        
       const updated = await User.findByIdAndUpdate(
       id,
       { $set: updates },    // changed to edit profile
 
       { new: true, runValidators: true }
-    ).select("_id email username bio hobbies");
+    ).select("_id email username bio hobbies profilePicture");
 
     if (!updated) return res.status(404).json({ message: "User not found" });
 

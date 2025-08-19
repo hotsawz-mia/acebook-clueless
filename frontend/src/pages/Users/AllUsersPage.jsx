@@ -10,6 +10,8 @@ export function AllUsersPage() {
   const [rowToggling, setRowToggling] = useState(new Set());
   const navigate = useNavigate();
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -78,11 +80,18 @@ export function AllUsersPage() {
             <div key={user._id} className="card p-4 hover:border-white/20 transition-colors">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
-                  {user.profilePicture ? (
-                    <img src={user.profilePicture} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
-                  ) : (
-                    <span className="text-xl">👤</span>
-                  )}
+                  {(() => {
+                    const profilePicUrl = user.profilePicture?.startsWith("http")
+                      ? user.profilePicture
+                      : user.profilePicture
+                      ? `${BACKEND_URL}${user.profilePicture}`
+                      : null;
+                    return profilePicUrl ? (
+                      <img src={profilePicUrl} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
+                    ) : (
+                      <span className="text-xl">👤</span>
+                    );
+                  })()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-menace-cream truncate">{user.username || 'No username'}</h3>

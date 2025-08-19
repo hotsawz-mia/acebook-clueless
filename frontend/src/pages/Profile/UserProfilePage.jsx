@@ -17,6 +17,11 @@ export function UserProfilePage() {
 
   const [editMode, setEditMode] = useState(false);
   const [usernameDraft, setUsernameDraft] = useState("");
+  const [bioDraft, setBioDraft] = useState(""); {/* added this for edit Hobbies */}
+  const [hobbiesDraft, setHobbiesDraft] = useState(""); {/* added this for edit Hobbies */}
+  const [profilePictureDraft, setProfilePictureDraft] = useState(null); {/* added this for edit profilepic */}
+  const [profilePicturePreview, setProfilePicturePreview] = useState("");
+
   const [saving, setSaving] = useState(false);
 
   const { showToast, Toast } = useToast();
@@ -42,6 +47,9 @@ export function UserProfilePage() {
         if (cancelled) return;
         setUser(data.user);
         setUsernameDraft(data.user.username || "");
+        setBioDraft(data.user.bio || "");   {/* added this for edit Hobbies */}
+        setHobbiesDraft(Array.isArray(data.user.hobbies) ? data.user.hobbies.join(", ") : (data.user.hobbies || "")); {/* added this for edit Hobbies */}
+        setProfilePicturePreview(data.user.profilePicture || "");  {/* added this for edit profilepic */}
         if (userId && userId !== currentUserId) {
           const me = await getUserById("me", token);
           if (!cancelled) {
@@ -113,10 +121,44 @@ export function UserProfilePage() {
   async function handleSaveProfile() {
     try {
       setSaving(true);
-      const updated = await updateUser("me", { username: usernameDraft }, token);
-      setUser(updated.user ?? { ...user, username: usernameDraft });
+
+      const hobbiesArray = Array.isArray(hobbiesDraft) ? hobbiesDraft : hobbiesDraft.split(",").map(h => h.trim()).filter(Boolean); {/* added this for edit Hobbies */}
+
+      const formData = new FormData();
+        formData.append("username", usernameDraft);
+        formData.append("bio", bioDraft);
+        formData.append("hobbies", JSON.stringify(hobbiesArray));
+        if (profilePictureDraft) {
+          formData.append("profilePicture", profilePictureDraft); // must match multer field
+        }
+
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+        body: formData,
+      });
+
+      const updated = await res.json();
+
+      setUser(updated.user ?? {
+        ...user,
+        username: usernameDraft,
+        bio: bioDraft,
+        hobbies: hobbiesArray,
+        profilePicture: updated.user?.profilePicture || user.profilePicture,
+      });
       setEditMode(false);
       showToast("Profile updated successfully!", "success");
+
+      // const updated = await updateUser("me", { username: usernameDraft, bio: bioDraft, hobbies: hobbiesArray, profilePicture: profilePictureDraft }, token); {/* added this for edit Hobbies */}
+      // setUser(updated.user ?? { ...user, username: usernameDraft, bio: bioDraft, hobbies: hobbiesArray, profilePicture: profilePictureDraft }); {/* added this for edit Hobbies and profile pic */} 
+      // setEditMode(false);
+      // showToast("Profile updated successfully!", "success");
+
+
+
     } catch (err) {
       console.error("Failed to update profile:", err);
       showToast("Failed to update profile", "error");
@@ -165,10 +207,10 @@ export function UserProfilePage() {
       )}
 
       {viewingOwn && (
-        <div className="space-y-4">
+        <div className="space-y-4" >
           {!editMode ? (
             <button onClick={() => setEditMode(true)} className="btn-outline">
-              Edit profile
+              Distort Persona
             </button>
           ) : (
             <>
@@ -181,7 +223,50 @@ export function UserProfilePage() {
                   className="input mt-1 w-full"
                 />
               </label>
-              <div className="flex gap-2">
+                {/* added this for edit Bio */}
+              <label className="block">
+                <span className="text-sm font-medium">Bio</span>
+                <input
+                  type="text"
+                  value={bioDraft}
+                  onChange={(e) => setBioDraft(e.target.value)}
+                  className="input mt-1 w-full"
+                />
+              </label>
+                {/* added this for edit Hobbies */}
+              <label className="block">
+                <span className="text-sm font-medium">Hobbies</span>
+                <input
+                  type="text"
+                  value={hobbiesDraft}
+                  onChange={(e) => setHobbiesDraft(e.target.value)}
+                  className="input mt-1 w-full"
+                />
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-medium">Profile Picture</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setProfilePictureDraft(file);
+                    if (file) setProfilePicturePreview(URL.createObjectURL(file));
+                  }}
+                />
+              </label>
+                      {/* added the profile pic above and below */}
+              {profilePicturePreview && (
+                <img
+                  src={profilePicturePreview}
+                  alt="Preview"
+                  className="w-24 h-24 rounded-full mt-2 object-cover"
+                />
+              )}
+
+
+              <div className="flex gap-2">    
                 <button onClick={handleSaveProfile} disabled={saving} className="btn-primary">
                   {saving ? "Saving..." : "Save"}
                 </button>
@@ -189,6 +274,10 @@ export function UserProfilePage() {
                   onClick={() => {
                     setEditMode(false);
                     setUsernameDraft(user.username || "");
+                    setBioDraft(user.bio || "");
+                    setHobbiesDraft(Array.isArray(user.hobbies) ? user.hobbies.join(", ") : (user.hobbies || ""));
+                    setProfilePictureDraft(null); // reset file
+                    setProfilePicturePreview(user.profilePicture || ""); // reset to stored image
                   }}
                   className="btn-outline"
                 >
