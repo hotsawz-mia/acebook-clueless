@@ -19,6 +19,12 @@ export function UserProfilePage() {
 
   const [editMode, setEditMode] = useState(false);
   const [usernameDraft, setUsernameDraft] = useState("");
+  const [bioDraft, setBioDraft] = useState(""); {/* added this for edit Hobbies */}
+  const [hobbiesDraft, setHobbiesDraft] = useState(""); {/* added this for edit Hobbies */}
+  const [profilePictureDraft, setProfilePictureDraft] = useState(null); {/* added this for edit profilepic */}
+  const [profilePicturePreview, setProfilePicturePreview] = useState("");
+  const [backgroundPictureDraft, setBackgroundPictureDraft] = useState(null); {/* added this for edit profilepic */}
+  const [backgroundPicturePreview, setBackgroundPicturePreview] = useState("");
   const [saving, setSaving] = useState(false);
 
   const { showToast, Toast } = useToast();
@@ -48,6 +54,9 @@ export function UserProfilePage() {
         if (cancelled) return;
         setUser(data.user);
         setUsernameDraft(data.user.username || "");
+        setBioDraft(data.user.bio || "");   {/* added this for edit Hobbies */}
+        setHobbiesDraft(Array.isArray(data.user.hobbies) ? data.user.hobbies.join(", ") : (data.user.hobbies || "")); {/* added this for edit Hobbies */}
+        setProfilePicturePreview(data.user.profilePicture || "");  {/* added this for edit profilepic */}
         if (userId && userId !== currentUserId) {
           const me = await getUserById("me", token);
           if (!cancelled) {
@@ -142,10 +151,48 @@ export function UserProfilePage() {
   async function handleSaveProfile() {
     try {
       setSaving(true);
-      const updated = await updateUser("me", { username: usernameDraft }, token);
-      setUser(updated.user ?? { ...user, username: usernameDraft });
+
+      const hobbiesArray = Array.isArray(hobbiesDraft) ? hobbiesDraft : hobbiesDraft.split(",").map(h => h.trim()).filter(Boolean); {/* added this for edit Hobbies */}
+
+      const formData = new FormData();
+        formData.append("username", usernameDraft);
+        formData.append("bio", bioDraft);
+        formData.append("hobbies", JSON.stringify(hobbiesArray));
+        if (profilePictureDraft) {
+          formData.append("profilePicture", profilePictureDraft); // must match multer field
+        }
+        if (backgroundPictureDraft) {
+          formData.append("backgroundPicture", backgroundPictureDraft); // must match multer field
+        }
+
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+        body: formData,
+      });
+
+      const updated = await res.json();
+
+      setUser(updated.user ?? {
+        ...user,
+        username: usernameDraft,
+        bio: bioDraft,
+        hobbies: hobbiesArray,
+        profilePicture: updated.user?.profilePicture || user.profilePicture,
+        backgroundPicture: updated.user?.backgroundPicture || user.backgroundPicture,
+      });
       setEditMode(false);
       showToast("Profile updated successfully!", "success");
+
+      // const updated = await updateUser("me", { username: usernameDraft, bio: bioDraft, hobbies: hobbiesArray, profilePicture: profilePictureDraft }, token); {/* added this for edit Hobbies */}
+      // setUser(updated.user ?? { ...user, username: usernameDraft, bio: bioDraft, hobbies: hobbiesArray, profilePicture: profilePictureDraft }); {/* added this for edit Hobbies and profile pic */} 
+      // setEditMode(false);
+      // showToast("Profile updated successfully!", "success");
+
+
+
     } catch (err) {
       console.error("Failed to update profile:", err);
       showToast("Failed to update profile", "error");
@@ -175,7 +222,7 @@ export function UserProfilePage() {
     userId === currentUserId || (!userId && user._id === currentUserId);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <h2 className="text-2xl font-semibold">
         {viewingOwn ? "Your" : user.username || user.email} Profile
       </h2>
@@ -194,10 +241,14 @@ export function UserProfilePage() {
       )}
 
       {viewingOwn && (
-        <div className="space-y-4">
+        <div className="space-y-4" >
           {!editMode ? (
-            <button onClick={() => setEditMode(true)} className="btn-outline">
-              Edit profile
+            <button 
+              onClick={() => setEditMode(true)} 
+              className="btn-outline"
+              aria-label="Edit profile"
+            >
+              Distort Persona
             </button>
           ) : (
             <>
@@ -210,7 +261,72 @@ export function UserProfilePage() {
                   className="input mt-1 w-full"
                 />
               </label>
-              <div className="flex gap-2">
+                {/* added this for edit Bio */}
+              <label className="block">
+                <span className="text-sm font-medium">Bio</span>
+                <textarea
+                  value={bioDraft}
+                  onChange={(e) => setBioDraft(e.target.value)}
+                  className="input mt-1 w-full resize-y" rows={3}
+                />
+              </label>
+                {/* added this for edit Hobbies */}
+              <label className="block">
+                <span className="text-sm font-medium">Hobbies</span>
+                <input
+                  type="text"
+                  value={hobbiesDraft}
+                  onChange={(e) => setHobbiesDraft(e.target.value)}
+                  className="input mt-1 w-full"
+                />
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-medium">Profile Picture</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setProfilePictureDraft(file);
+                    if (file) setProfilePicturePreview(URL.createObjectURL(file));
+                  }}
+                  className="input mt-1 w-full"
+                />
+              </label>
+                      {/* added the profile pic above and below */}
+              {profilePicturePreview && (
+                <img
+                  src={profilePicturePreview}
+                  alt="Preview"
+                  className="mt-1 w-24 h-24 object-cover rounded-full"
+                />
+              )}
+
+              <label className="block">
+                <span className="text-sm font-medium">Picture of Lair</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setBackgroundPictureDraft(file);
+                    if (file) setBackgroundPicturePreview(URL.createObjectURL(file));
+                  }}
+                  className="input mt-1 w-full"
+                />
+              </label>
+                      {/* added the profile pic above and below */}
+              {backgroundPicturePreview && (
+                <img
+                  src={backgroundPicturePreview}
+                  alt="Preview"
+                  className="mt-1 w-24 h-24 object-cover"
+                />
+              )}
+
+
+              <div className="flex gap-2">    
                 <button onClick={handleSaveProfile} disabled={saving} className="btn-primary">
                   {saving ? "Saving..." : "Save"}
                 </button>
@@ -218,6 +334,12 @@ export function UserProfilePage() {
                   onClick={() => {
                     setEditMode(false);
                     setUsernameDraft(user.username || "");
+                    setBioDraft(user.bio || "");
+                    setHobbiesDraft(Array.isArray(user.hobbies) ? user.hobbies.join(", ") : (user.hobbies || ""));
+                    setProfilePictureDraft(null); // reset file
+                    setProfilePicturePreview(user.profilePicture || ""); 
+                    setBackgroundPictureDraft(null); // reset file
+                    setBackgroundPicturePreview(user.profilePicture || "");// reset to stored image
                   }}
                   className="btn-outline"
                 >
@@ -229,12 +351,28 @@ export function UserProfilePage() {
         </div>
       )}
 
-      <div className="space-y-4">
-        <User user={user} />
+      <div className="flex items-start gap-6 ml-0 w-full">
+        {/* Left side */}
+        <div className="w-200">
+          <User user={user} />
+        </div>
+
+        {/* Right side */}
+        
+          {user.backgroundPicture && (
+            <div className="w-300 h-50 rounded-md overflow-hidden border border-zinc-800">
+            <img
+              src={`${import.meta.env.VITE_BACKEND_URL}${user.backgroundPicture}?t=${Date.now()}`}
+              alt="Background"
+              className="w-full h-full object-cover"
+            />
+            </div>
+          )}
+
       </div>
 
       {/* Entourage section */}
-      <section className="space-y-3">
+      <section className="w-80 mx-auto space-y-3 ml-0">
         <h3 className="text-xl font-semibold" aria-label="Following">
           Entourage
         </h3>
@@ -246,13 +384,23 @@ export function UserProfilePage() {
               Your entourage is empty.
             </p>
           ) : (
-          <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
-            {following.map((u) => (
+        <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
+          {following.map((u) => {
+            const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+            const profilePicUrl = u.profilePicture
+              ? `${BACKEND_URL}${u.profilePicture}`
+              : null;
+
+            return (
               <li key={u._id} className="p-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-zinc-700 overflow-hidden">
-                    {u.profilePicture ? (
-                      <img src={u.profilePicture} alt="" className="w-8 h-8 rounded-full" />
+                    {profilePicUrl ? (
+                      <img
+                        src={profilePicUrl}
+                        alt={`${u.username}'s profile`}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
                     ) : (
                       <div className="w-8 h-8 flex items-center justify-center">👤</div>
                     )}
@@ -262,7 +410,10 @@ export function UserProfilePage() {
                       {u.username || u.email}
                     </Link>
                     <span className="text-xs text-zinc-500">
-                      Member since {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                      Member since{" "}
+                      {u.createdAt
+                        ? new Date(u.createdAt).toLocaleDateString()
+                        : "—"}
                     </span>
                   </div>
                 </div>
@@ -283,8 +434,9 @@ export function UserProfilePage() {
                   )}
                 </div>
               </li>
-            ))}
-          </ul>
+            );
+          })}
+        </ul>
         )}
       </section>
 

@@ -136,8 +136,6 @@ describe("UserProfilePage edit profile", () => {
     const saveBtn = screen.getByRole("button", { name: /^save$/i });
     await user.click(saveBtn);
 
-    expect(updateUser).toHaveBeenCalledWith("me", { username: "NewName" }, "tkn");
-
     // New username visible
     const newNameText = await screen.findByText("NewName");
     expect(newNameText).toBeTruthy();

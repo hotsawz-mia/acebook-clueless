@@ -1,5 +1,7 @@
 const User = require("../models/user");
 
+
+
 function create(req, res) {
   const { email, password, username } = req.body;
 
@@ -143,17 +145,44 @@ async function unfollowUser(req, res) {
 async function updateMe(req, res) {
   try {
     const id = req.user_id; // set by tokenChecker
-    const { username } = req.body;
+    const { username, bio, hobbies } = req.body;  // changed to edit profile
 
     if (!username || typeof username !== "string" || username.trim().length < 3) {
       return res.status(400).json({ message: "Invalid username" });
     }
+    const base = (process.env.BACKEND_URL || "").replace(/\/$/, "");
+       // changed to edit profile
+    const updates = {};
+      if (username) updates.username = username.trim();
+      if (bio !== undefined) updates.bio = bio.trim();
+      if (hobbies !== undefined) {
+        try {
+          updates.hobbies = Array.isArray(hobbies) ? hobbies : JSON.parse(hobbies);
+        } catch {
+          updates.hobbies = []; // fallback if bad JSON
+        }
+      }
+      const profile = req.files?.profilePicture?.[0];
+      const background = req.files?.backgroundPicture?.[0];
 
-    const updated = await User.findByIdAndUpdate(
+      if (profile) {
+        updates.profilePicture = base
+          ? `${base}/uploads/${profile.filename}`
+          : `/uploads/${profile.filename}`;
+      }
+
+      if (background) {
+        updates.backgroundPicture = base
+          ? `${base}/uploads/${background.filename}`
+          : `/uploads/${background.filename}`;
+      }
+        
+      const updated = await User.findByIdAndUpdate(
       id,
-      { $set: { username: username.trim() } },
+      { $set: updates },    // changed to edit profile
+
       { new: true, runValidators: true }
-    ).select("_id email username");
+    ).select("_id email username bio hobbies profilePicture backgroundPicture");
 
     if (!updated) return res.status(404).json({ message: "User not found" });
 

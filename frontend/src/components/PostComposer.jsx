@@ -119,8 +119,18 @@ export default function PostComposer({ onCreated, className = "" }) {
           transition: "min-height 220ms ease, box-shadow 200ms ease",
         }}
       />
-      
-
+      {/* New photo input */}
+      <div className="mt-3">
+        <label htmlFor="composer-photo" className="block font-semibold mb-1">Attach a photo:</label>
+        <input
+          id="composer-photo"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setPhoto(e.target.files[0])}
+          disabled={submitting}
+        />
+        {photo && <p className="mt-1 text-sm">Selected file: {photo.name}</p>}
+      </div>
 
 
       {/* Counter + errors (fade/slide & height collapse) */}

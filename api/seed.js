@@ -11,13 +11,17 @@ const users = [
     username: "Dave",
     email: "dave@dave.com",
     password: "dave",
-    bio: "Just a dude who was in the wrong place at the right time",
+    profilePicture: "/uploads/dave.webp",
+    backgroundPicture: "/uploads/Dave_Fam.jpeg",
+    bio: "Just a dude who stumbled into destiny by accident. When he’s not perfecting sourdough, he’s mastering the art of staring contests with drying paint or adding yet another thimble to his oddly prestigious collection. A man of unusual hobbies, but impeccable timing.",
     hobbies: ["Baking", "Watching paint dry", "Collecting thimbles"],
   },
   {
     username: "Hades",
     email: "hades@underworld.com",
     password: "flames4hair",
+    profilePicture: "/uploads/Hades.webp",
+    backgroundPicture: "/uploads/Hades_Lair.webp",
     bio: "God of the Underworld. Fluent in sarcasm and contract law.",
     hobbies: ["souls bargaining", "flame styling", "monologuing"],
   },
@@ -25,6 +29,8 @@ const users = [
     username: "MojoJojo",
     email: "mojo.jojo@jojoschemes.net",
     password: "monkeybusiness",
+    profilePicture: "/uploads/Mojojojo.webp",
+    backgroundPicture: "/uploads/Mojojojo_Lair.webp",
     bio: "Simian super-genius bent on ruling Townsville, with impeccable repetition skills.",
     hobbies: ["world domination", "long speeches", "gadget tinkering"],
   },
@@ -32,6 +38,8 @@ const users = [
     username: "Plankton",
     email: "plankton@chumbucket.biz",
     password: "secretformula",
+    profilePicture: "/uploads/Plankton.webp",
+    backgroundPicture: "/uploads/Plankton_Lair.webp",
     bio: "1% evil, 99% hot gas. Proprietor of the Chum Bucket.",
     hobbies: ["recipe theft", "robot building", "petting Karen"],
   },
@@ -39,6 +47,8 @@ const users = [
     username: "LordFarquaad",
     email: "farquaad@duloc.gov",
     password: "shortking",
+    profilePicture: "/uploads/LordFarquaad.webp",
+    backgroundPicture: "/uploads/LordFaquaad_Lair.webp",
     bio: "Ruler of Duloc. Loves order, hates ogres.",
     hobbies: ["castle tours", "lawn grooming", "overcompensating"],
   },
@@ -59,7 +69,7 @@ const posts = [
 
 async function seedDB() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(process.env.MONGODB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
