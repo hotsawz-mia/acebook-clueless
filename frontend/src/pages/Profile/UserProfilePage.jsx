@@ -226,11 +226,10 @@ export function UserProfilePage() {
                 {/* added this for edit Bio */}
               <label className="block">
                 <span className="text-sm font-medium">Bio</span>
-                <input
-                  type="text"
+                <textarea
                   value={bioDraft}
                   onChange={(e) => setBioDraft(e.target.value)}
-                  className="input mt-1 w-full"
+                  className="input mt-1 w-full resize-y" rows={3}
                 />
               </label>
                 {/* added this for edit Hobbies */}
@@ -254,6 +253,7 @@ export function UserProfilePage() {
                     setProfilePictureDraft(file);
                     if (file) setProfilePicturePreview(URL.createObjectURL(file));
                   }}
+                  className="input mt-1 w-full"
                 />
               </label>
                       {/* added the profile pic above and below */}
@@ -261,7 +261,7 @@ export function UserProfilePage() {
                 <img
                   src={profilePicturePreview}
                   alt="Preview"
-                  className="w-24 h-24 rounded-full mt-2 object-cover"
+                  className="input mt-1 w-full"
                 />
               )}
 
@@ -306,13 +306,23 @@ export function UserProfilePage() {
               Your entourage is empty.
             </p>
           ) : (
-          <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
-            {following.map((u) => (
+         <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
+          {following.map((u) => {
+            const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+            const profilePicUrl = u.profilePicture
+              ? `${BACKEND_URL}${u.profilePicture}`
+              : null;
+
+            return (
               <li key={u._id} className="p-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-zinc-700 overflow-hidden">
-                    {u.profilePicture ? (
-                      <img src={u.profilePicture} alt="" className="w-8 h-8 rounded-full" />
+                    {profilePicUrl ? (
+                      <img
+                        src={profilePicUrl}
+                        alt={`${u.username}'s profile`}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
                     ) : (
                       <div className="w-8 h-8 flex items-center justify-center">👤</div>
                     )}
@@ -322,7 +332,10 @@ export function UserProfilePage() {
                       {u.username || u.email}
                     </Link>
                     <span className="text-xs text-zinc-500">
-                      Member since {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                      Member since{" "}
+                      {u.createdAt
+                        ? new Date(u.createdAt).toLocaleDateString()
+                        : "—"}
                     </span>
                   </div>
                 </div>
@@ -343,8 +356,9 @@ export function UserProfilePage() {
                   )}
                 </div>
               </li>
-            ))}
-          </ul>
+            );
+          })}
+        </ul>
         )}
       </section>
 

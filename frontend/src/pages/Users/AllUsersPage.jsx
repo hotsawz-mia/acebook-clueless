@@ -81,13 +81,13 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
                   {(() => {
-                    const profilePicUrl = user.profilePicture?.startsWith("http")
+                    const url = user.profilePicture?.startsWith("http")
                       ? user.profilePicture
                       : user.profilePicture
                       ? `${BACKEND_URL}${user.profilePicture}`
                       : null;
-                    return profilePicUrl ? (
-                      <img src={profilePicUrl} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
+                    return url ? (
+                      <img src={url} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
                     ) : (
                       <span className="text-xl">👤</span>
                     );
