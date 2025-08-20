@@ -29,7 +29,7 @@ export function SignupPage() {
       <div className="form-card">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="field">
-            <label htmlFor="username" className="label">Username</label>
+            <label htmlFor="username" className="label">Alias</label>
             <input
               id="username"
               type="text"
