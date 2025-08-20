@@ -25,7 +25,7 @@ async function completeLoginForm() {
   const user = userEvent.setup();
 
   const emailInputEl = screen.getByLabelText(/Email/i);
-  const passwordInputEl = screen.getByLabelText(/Password/i);
+  const passwordInputEl = screen.getByLabelText(/Secret Oath/i);
   const submitButtonEl = screen.getByRole("button", { name: /sign in/i });
 
   await user.type(emailInputEl, "test@email.com");
