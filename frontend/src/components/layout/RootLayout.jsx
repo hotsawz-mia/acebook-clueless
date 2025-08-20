@@ -55,7 +55,7 @@ export default function RootLayout() {
             </h1>
           </div>
           {/* The navbar now shows the user avatar if logged in */}
-          <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} />
+          <NavBar isLoggedIn={isLoggedIn} user={user} />
         </div>
       </header>
 
