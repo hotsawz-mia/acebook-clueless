@@ -73,7 +73,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   return (
     <>
       <div className="max-w-4xl mx-auto space-y-6">
-        <h2 className="font-metal text-5xl">The Damned</h2>
+        <h2 className="font-metal text-5xl">HALL OF THE DAMNED</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {users.map((user) => (

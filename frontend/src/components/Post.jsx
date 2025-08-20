@@ -1,6 +1,6 @@
 import LikeButton from "./LikeButton.jsx";
 import CommentSection from "./CommentSection.jsx";
-
+import Avatar from "./Avatar.jsx"
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 function Post({ post }) {
@@ -17,11 +17,17 @@ function Post({ post }) {
   return (
     <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
       {(user || date) && (
-        <div className="flex justify-between items-center text-sm text-gray-500">
-          {user && <span>Posted by: {user.username ?? user.email}</span>}
-          {date && (
-            <span data-testid="post-date">Posted at: {date}</span>
-          )}
+        <div className="flex items-center gap-3 text-sm text-gray-500">
+          <Avatar 
+            src={user?.profilePicture} 
+            alt={`${user.username}'s avatar`} 
+            className="w-15 h-15 rounded-full" 
+          />
+          <div felx flex-col>
+            {user && <span>Posted by: {user.username ?? user.email}</span>} <br />
+            {date && (<span data-testid="post-date">Posted at: {date}</span>
+            )}
+          </div>
         </div>
       )}
       <p className="text-lg sm:text-xl font-semibold leading-snug">
