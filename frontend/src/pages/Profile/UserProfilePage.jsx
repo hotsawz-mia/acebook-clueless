@@ -360,7 +360,7 @@ export function UserProfilePage() {
         {/* Right side */}
         
           {user.backgroundPicture && (
-            <div className="w-300 h-50 rounded-md overflow-hidden border border-zinc-800">
+            <div className="w-300 rounded-md overflow-hidden border border-zinc-800">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}${user.backgroundPicture}?t=${Date.now()}`}
               alt="Background"
