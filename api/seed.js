@@ -15,6 +15,8 @@ const users = [
     backgroundPicture: "/uploads/Dave_Fam.jpeg",
     bio: "Just a dude who stumbled into destiny by accident. When he’s not perfecting sourdough, he’s mastering the art of staring contests with drying paint or adding yet another thimble to his oddly prestigious collection. A man of unusual hobbies, but impeccable timing.",
     hobbies: ["Baking", "Watching paint dry", "Collecting thimbles"],
+    following: [],
+    followers: []
   },
   {
     username: "Hades",
@@ -91,6 +93,31 @@ async function seedDB() {
     // Insert users
     const createdUsers = await User.insertMany(hashedUsers);
     console.log("Villain users seeded");
+
+    const userMap = {};
+    createdUsers.forEach(u => { userMap[u.username] = u._id; });
+
+    // Define relationships (by username)
+    const relationships = [
+      { username: "Dave", following: ["Hades", "MojoJojo"], followers: ["Hades"] },
+      { username: "Hades", following: ["Dave"], followers: ["Dave", "MojoJojo"] },
+      { username: "MojoJojo", following: ["Plankton"], followers: ["Dave"] },
+      { username: "Plankton", following: ["LordFarquaad"], followers: ["MojoJojo"] },
+      { username: "LordFarquaad", following: [], followers: ["Plankton"] },
+    ];
+
+    // Update each user with correct references
+    for (const rel of relationships) {
+      await User.updateOne(
+        { username: rel.username },
+        {
+          $set: {
+            following: rel.following.map(name => userMap[name]),
+            followers: rel.followers.map(name => userMap[name]),
+          }
+        }
+      );
+    }
 
     // Create posts linked to the right user IDs
     const postDocs = posts.map((post) => {
