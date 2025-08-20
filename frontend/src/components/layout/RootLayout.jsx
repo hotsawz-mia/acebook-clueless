@@ -5,6 +5,7 @@ import bgVideo from "../../assets/GMN-540-L.mp4"; // or put in /public and use "
 import NavBar from "../../components/NavBar";
 import { getUserById } from "../../services/users";
 
+
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -82,7 +83,7 @@ export default function RootLayout() {
           </>
         )}
         <div className="relative">
-          <Outlet />
+          <Outlet context={{ isLoggedIn, setIsLoggedIn, user }} />
         </div>
       </main>
 

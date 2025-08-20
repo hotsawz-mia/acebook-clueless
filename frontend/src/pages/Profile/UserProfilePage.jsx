@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {useOutletContext, Link, useNavigate, useParams } from "react-router-dom";
 import User from "../../components/User";
 import LogoutButton from "../../components/LogoutButton";
 import { getUserById, followUser, unfollowUser, updateUser, getFollowing } from "../../services/users";
@@ -7,7 +7,9 @@ import { useToast } from "../../hooks/useToast";
 import Post from "../../components/Post";
 import { getUserPosts } from "../../services/posts"
 
+
 export function UserProfilePage() {
+  const { setIsLoggedIn } = useOutletContext();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -465,8 +467,12 @@ export function UserProfilePage() {
         </div>
       
       </section>
-
-      {viewingOwn && <LogoutButton />}
+      {viewingOwn && (
+        <div className="flex justify-center">
+          <LogoutButton setIsLoggedIn={setIsLoggedIn} />
+        </div>
+      )}
+      
       <Toast />
     </div>
   );

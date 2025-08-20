@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import LogoutButton from "./LogoutButton";
 import Avatar from "./Avatar";
 
-function NavBar({ isLoggedIn, setIsLoggedIn, user}) {
+function NavBar({ isLoggedIn, user}) {
   return (
     <nav className="navbar flex items-center gap-6 text-sm">
       {isLoggedIn ? (
@@ -11,12 +10,11 @@ function NavBar({ isLoggedIn, setIsLoggedIn, user}) {
           <Link to="/users" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Users</Link>
           {/* user pfp */}
           <Link to="/profile" className="text-menace-cream/80 hover:text-menace-cream transition-colors">
-          <Avatar 
-            src={user?.profilePicture || ""} 
-            className="w-auto h-auto rounded-full" 
-          />
+            <Avatar 
+              src={user?.profilePicture || ""} 
+              className="w-auto h-auto rounded-full" 
+            />
           </Link>
-          <LogoutButton setIsLoggedIn={setIsLoggedIn} />
         </>
       ) : (
         <>
