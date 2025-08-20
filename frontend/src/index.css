@@ -168,9 +168,126 @@ body { @apply bg-menace-ink text-menace-cream font-sans; }
     @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 space-y-4;
   }
 }
-/* ==== Utilities (tiny extras you’ll like) ====================== */
 @layer utilities {
   .glass { @apply bg-white/5 backdrop-blur-sm border border-white/10; }
   .muted { @apply text-menace-cream/70; }
   .hard-shadow { box-shadow: 0 12px 40px -8px rgb(0 0 0 / 0.45); }
+}
+
+
+@keyframes dripDown {
+  0%   { transform: translate(-50%, -100%); opacity: 0; }
+  2%   { transform: translate(-50%, 0); opacity: 1; width: 20px; height: 20px; }
+  3%   { transform: translate(-50%, 0); width: 100px; height: 100px; }
+  10%  { transform: translate(-50%, 0); width: 20px; height: 60px; }
+  90%  { transform: translate(-50%, 70vh); opacity: 0.02; border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%; }
+  100% { transform: translate(-50%, 80vh); opacity: 0; height: 160px; }
+}
+
+.drip {
+  position: absolute;
+  top: 0;
+  left: var(--x, 50vw);
+  width: 20px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(#b30000, #400000);
+  animation: dripDown 6s ease-out forwards;
+  transform-origin: top center;
+  will-change: transform, width, height, opacity;
+}
+
+html, body {
+  cursor: url("frontend/src/assets/Favicon.png") 16 16, auto; 
+}
+
+/* a, button, [role="button"] {
+  cursor: url("/claw-tap.png") 16 16, pointer;
+} */
+
+
+@keyframes flicker {
+  0%   { filter: none; }
+  20%  { filter: hue-rotate(90deg) blur(1px); }
+  40%  { filter: hue-rotate(-45deg) brightness(1.5); }
+  60%  { filter: none; }
+  80%  { filter: hue-rotate(180deg) contrast(2); }
+  100% { filter: none; }
+}
+
+.flicker:hover {
+  animation: flicker 0.3s steps(2) 1;
+}
+
+
+
+@keyframes glitch {
+  0% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(20% 0 40% 0); transform: translate(-2px, -2px); }
+  40% { clip-path: inset(40% 0 20% 0); transform: translate(2px, 2px); }
+  60% { clip-path: inset(10% 0 60% 0); transform: translate(-1px, 1px); }
+  80% { clip-path: inset(30% 0 30% 0); transform: translate(1px, -1px); }
+  100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+}
+
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.glitch::before {
+  color: red;
+  z-index: -1;
+  animation: glitch 0.6s infinite;
+}
+
+.glitch::after {
+  color: cyan;
+  z-index: -2;
+  animation: glitch 0.6s infinite reverse;
+}
+
+
+@keyframes twitch {
+  0%, 100% { transform: scale(1) rotate(0); }
+  20% { transform: scale(1.2, 0.8) rotate(-5deg); }
+  40% { transform: scale(0.9, 1.1) rotate(5deg); }
+  60% { transform: scale(1.05) rotate(-2deg); }
+  80% { transform: scale(0.95) rotate(2deg); }
+}
+
+.jumpscare:hover {
+  animation: twitch 0.3s linear;
+}
+
+
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lightning {
+    0%, 95%, 100% { opacity: 0; }
+    96% { opacity: .9; }
+    97% { opacity: 0; }
+    98% { opacity: .7; }
+    99% { opacity: 0; }
+  }
+  .lightning-global {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: white;
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: lightning 12s infinite;
+    z-index: 5;
+  }
 }

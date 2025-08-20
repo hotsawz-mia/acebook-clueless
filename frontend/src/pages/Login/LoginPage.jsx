@@ -40,22 +40,22 @@ export function LoginPage() {
         <div className="card w-full max-w-md p-6 shadow-xl">
           <header className="mb-6">
             <h1 className="font-metal text-5xl">Welcome back</h1>
-            <p className="mt-1 text-sm text-menace-cream/70">Sign in to continue</p>
+            <p className="mt-1 text-sm text-menace-cream/70">Enter the Lair to continue</p>
           </header>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <label htmlFor="email" className="label">Email</label>
             <input id="email" type="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-            <label htmlFor="password" className="label">Password</label>
+            <label htmlFor="password" className="label">Secret Oath</label>
             <input id="password" type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
             {error && (
               <p className="text-sm text-red-400" role="alert">{error}</p>
             )}
 
-            <button type="submit" disabled={loading} className="btn-primary w-full">
-              {loading ? "Signing in…" : "Sign in"}
+            <button type="submit" aria-label="Sign In" disabled={loading} className="btn-primary w-full">
+              {loading ? "Signing in…" : "Enter the Lair"}
             </button>
           </form>
         </div>

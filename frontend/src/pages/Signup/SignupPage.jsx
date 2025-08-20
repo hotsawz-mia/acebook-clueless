@@ -24,12 +24,12 @@ export function SignupPage() {
   return (
     <>
       <div className="max-w-md mx-auto space-y-6">
-      <h2 className="font-metal text-5xl">Sign Up</h2>
+      <h2 className="font-metal text-5xl">Swear Allegiance</h2>
 
       <div className="form-card">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="field">
-            <label htmlFor="username" className="label">Username</label>
+            <label htmlFor="username" className="label">Your Evil Name</label>
             <input
               id="username"
               type="text"
@@ -55,7 +55,7 @@ export function SignupPage() {
           </div>
 
           <div className="field">
-            <label htmlFor="password" className="label">Password</label>
+            <label htmlFor="password" className="label">Secret Oath</label>
             <input
               id="password"
               type="password"

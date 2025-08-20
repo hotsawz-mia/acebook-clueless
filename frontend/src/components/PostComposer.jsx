@@ -188,7 +188,7 @@ export default function PostComposer({ onCreated, className = "" }) {
           id="submit"
           role="submit-button"
           disabled={submitting || (!message.trim() && !photo)}
-          className="btn-primary shadow-menace disabled:opacity-60 disabled:cursor-not-allowed"
+          className="btn-primary shadow-menace disabled:opacity-60 disabled:cursor-not-allowed flicker"
         >
           {submitting ? "Submitting..." : "Post"}
         </button>
