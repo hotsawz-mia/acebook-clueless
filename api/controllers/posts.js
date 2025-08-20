@@ -96,12 +96,28 @@ async function addComment(req, res) {
   res.json({ comments: post.comments });
 }
 
+
+async function getUserPosts(req, res) {
+  try {
+
+
+    const posts = await Post.find({ user: req.params.userId})
+    .sort({ createdAt: -1})
+    .populate("user", "username");
+
+    res.status(200).json({ posts });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 const PostsController = {
   getAllPosts,
   createPost,
   likePost,
   getComments,
   addComment,
+  getUserPosts,
 };
 
 module.exports = PostsController;

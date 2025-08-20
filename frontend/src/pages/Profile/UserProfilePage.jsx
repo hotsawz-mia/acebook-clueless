@@ -4,6 +4,8 @@ import User from "../../components/User";
 import LogoutButton from "../../components/LogoutButton";
 import { getUserById, followUser, unfollowUser, updateUser, getFollowing } from "../../services/users";
 import { useToast } from "../../hooks/useToast";
+import Post from "../../components/Post";
+import { getUserPosts } from "../../services/posts"
 
 export function UserProfilePage() {
   const [user, setUser] = useState(null);
@@ -31,6 +33,10 @@ export function UserProfilePage() {
   const { userId } = useParams();
   const currentUserId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
+
+  // Added state just for posts
+  const [posts, setPosts] = useState([]); // Keeps posts separate from user profile/following
+  const [postsLoading, setPostsLoading] = useState(true); // Profile loading != posts loading
 
   useEffect(() => {
     if (!token) {
@@ -84,6 +90,29 @@ export function UserProfilePage() {
   
     return () => { cancelled = true; };
   }, [navigate, userId, currentUserId, token]);
+
+    // fetch only this user's posts
+  useEffect(() => {
+    if (!token) { navigate("/login"); return; }
+    const targetId = userId || currentUserId;      // which user's posts
+    let cancelled = false;
+
+    (async () => {
+      try {
+        setPostsLoading(true);                      // start spinner for posts
+        const { posts } = await getUserPosts(targetId, token);
+        if (!cancelled) setPosts(posts ?? []);      // store array (empty if none)
+      } catch (e) {
+        if (!cancelled) setPosts([]);               // safe fallback
+        if (e?.status === 401) navigate("/login");  // auth failure path
+      } finally {
+        if (!cancelled) setPostsLoading(false);     // stop spinner
+      }
+    })();
+
+    return () => { cancelled = true; };             // avoid setState after unmount
+  }, [userId, currentUserId, token, navigate]);
+
 
   async function handleFollowToggle() {
     if (!userId || userId === currentUserId) return;
@@ -216,7 +245,9 @@ export function UserProfilePage() {
       {viewingOwn && (
         <div className="space-y-4" >
           {!editMode ? (
+
             <button onClick={() => setEditMode(true)} className="btn-outline" aria-label="edit profile">
+
               Distort Persona
             </button>
           ) : (
@@ -329,7 +360,7 @@ export function UserProfilePage() {
         {/* Right side */}
         
           {user.backgroundPicture && (
-            <div className="w-300 h-50 rounded-md overflow-hidden border border-zinc-800">
+            <div className="w-300 rounded-md overflow-hidden border border-zinc-800">
             <img
               src={`${import.meta.env.VITE_BACKEND_URL}${user.backgroundPicture}?t=${Date.now()}`}
               alt="Background"
@@ -407,6 +438,32 @@ export function UserProfilePage() {
           })}
         </ul>
         )}
+      </section>
+
+      {/* Posts section */}
+      <section className="space-y-3">
+        <h3 className="text-xl font-semibold" aria-label="Posts">
+        Their Posts
+        </h3>
+
+        <div className="space-y-4" role="feed" aria-busy={postsLoading}>
+          {postsLoading ? (
+            <p>Loading…</p>
+          ) : posts.length === 0 ? (
+            <div className="card p-6 text-center">
+              <p className="muted">No posts yet.</p>
+            </div>
+          ) : (
+            posts
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((post) => (
+              <div data-testid="post" key={post._id}>
+                <Post post={post} />
+              </div>
+            ))
+          )}
+        </div>
+      
       </section>
 
       {viewingOwn && <LogoutButton />}
