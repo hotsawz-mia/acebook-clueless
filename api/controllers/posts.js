@@ -5,17 +5,17 @@ const path = require("path");
 async function getAllPosts(req, res) {
   try {
 
-    const posts = await Post.find().populate("user", "username");
+    const posts = await Post.find().populate({ path: "user", select: "username profilePicture", match: { profilePicture: { $exists: true, $nin: [null, ""] } } }); // added on this like for the profile pic to appear in posts 
+
+    const postsWithAvatar = posts.filter(p => p.user !== null);
 
     const token = generateToken(req.user_id);
-
-    // Add likedByUser flag and ensure photoUrl is included
-    const postsWithLikedFlag = posts.map(post => ({
+    // added posts with avatar above and below for profile pic
+    const postsWithLikedFlag = postsWithAvatar.map(post => ({
       ...post.toObject(),
       likedByUser: post.likedBy.some(
         id => id.toString() === req.user_id
       ),
-      // photoUrl is included automatically if in schema
     }));
 
     res.status(200).json({ posts: postsWithLikedFlag, token });
@@ -103,7 +103,7 @@ async function getUserPosts(req, res) {
 
     const posts = await Post.find({ user: req.params.userId})
     .sort({ createdAt: -1})
-    .populate("user", "username");
+    .populate("user", "username profilePicture");
 
     res.status(200).json({ posts });
   } catch (error) {
