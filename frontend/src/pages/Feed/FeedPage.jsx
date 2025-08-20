@@ -33,12 +33,11 @@ export function FeedPage() {
       refresh();
     }
   }
-
   return (
     <main className="shell">
       {/* board info */}
       <div className="hidden sm:flex flex-col items-center gap-1">
-        <h2 className="text-2xl">Board of Misdeeds</h2>
+      <h2 className="font-metal text-5xl">Board of Misdeeds</h2>
         <p className="section-subtitle mt-1">
           Latest activity from the Global Menace Network
         </p>

@@ -39,7 +39,7 @@ export function LoginPage() {
       <div className="grid place-items-center">
         <div className="card w-full max-w-md p-6 shadow-xl">
           <header className="mb-6">
-            <h1 className="text-2xl">Welcome back</h1>
+            <h1 className="font-metal text-5xl">Welcome back</h1>
             <p className="mt-1 text-sm text-menace-cream/70">Sign in to continue</p>
           </header>
 

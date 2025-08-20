@@ -223,8 +223,10 @@ export function UserProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <h2 className="text-2xl font-semibold">
-        {viewingOwn ? "Your" : user.username || user.email} Profile
+      <h2 className="font-metal text-5xl">
+        {viewingOwn 
+          ? "Your" 
+          : `${user.username || user.email}'s`} Profile
       </h2>
 
       {!viewingOwn && (
@@ -243,11 +245,9 @@ export function UserProfilePage() {
       {viewingOwn && (
         <div className="space-y-4" >
           {!editMode ? (
-            <button 
-              onClick={() => setEditMode(true)} 
-              className="btn-outline"
-              aria-label="Edit profile"
-            >
+
+            <button onClick={() => setEditMode(true)} className="btn-outline" aria-label="edit profile">
+
               Distort Persona
             </button>
           ) : (
@@ -373,7 +373,7 @@ export function UserProfilePage() {
 
       {/* Entourage section */}
       <section className="w-80 mx-auto space-y-3 ml-0">
-        <h3 className="text-xl font-semibold" aria-label="Following">
+        <h3 className="font-metal text-2xl" aria-label="Following">
           Entourage
         </h3>
         {followingLoading ? (
