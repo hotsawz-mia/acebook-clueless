@@ -3,18 +3,41 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import logoUrl from "../../assets/Favicon.png";
 import bgVideo from "../../assets/GMN-540-L.mp4"; // or put in /public and use "/GMN-540-L.mp4"
 import NavBar from "../../components/NavBar";
+import { getUserById } from "../../services/users";
 
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const { pathname } = useLocation();
   const showHomeBg = pathname === "/";
 
   useEffect(() => {
-    const handleStorage = () => setIsLoggedIn(!!localStorage.getItem("token"));
-    setIsLoggedIn(!!localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    if (token) {
+      getUserById("me", token)
+        .then((data) => setUser(data.user))
+        .catch(() => setUser(null));
+    } else {
+      setUser(null);
+    }
+
+    const handleStorage = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+      if (token) {
+        getUserById("me", token)
+          .then((data) => setUser(data.user))
+          .catch(() => setUser(null));
+      } else {
+        setUser(null);
+      }
+    };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
+  
 
   return (
     // CHANGED: added flex + flex-col so header, main, footer stack vertically
@@ -30,7 +53,8 @@ export default function RootLayout() {
               GLOBAL MENACE NETWORK
             </h1>
           </div>
-          <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+          {/* The navbar now shows the user avatar if logged in */}
+          <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} />
         </div>
       </header>
 
