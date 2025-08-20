@@ -39,7 +39,7 @@ function User({ user }) {
       {/* Bio */}
       {user.bio && (
         <div className="mb-4">
-          <h4 className="font-medium mb-2">Bio</h4>
+          <h4 className="font-medium mb-2">Cursed Backstory</h4>
           <p className="text-zinc-300">{user.bio}</p>
         </div>
       )}
@@ -47,7 +47,7 @@ function User({ user }) {
       {/* Hobbies */}
       {user.hobbies?.length > 0 && (
         <div className="mb-4">
-          <h4 className="font-medium mb-2">Hobbies</h4>
+          <h4 className="font-medium mb-2">Dark Delights</h4>
           <div className="flex flex-wrap gap-2">
             {user.hobbies.map((hobby, index) => (
               <span
