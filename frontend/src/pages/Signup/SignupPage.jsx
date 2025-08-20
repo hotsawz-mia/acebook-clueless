@@ -24,7 +24,7 @@ export function SignupPage() {
   return (
     <>
       <div className="max-w-md mx-auto space-y-6">
-      <h2 className="text-2xl font-semibold">Sign Up</h2>
+      <h2 className="font-metal text-5xl">Sign Up</h2>
 
       <div className="form-card">
         <form onSubmit={handleSubmit} className="space-y-4">

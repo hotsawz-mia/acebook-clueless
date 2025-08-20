@@ -27,8 +27,8 @@ export default function RootLayout() {
                 className="h-7 w-auto transition-all duration-200 hover:scale-105 hover:brightness-125 hover:saturate-200"
               />
             </Link>
-            <h1 className="text-base tracking-wider font-semibold sm:hidden">GMN</h1>
-            <h1 className="hidden sm:block text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
+            <h1 className="font-metal text-base tracking-wider font-semibold sm:hidden">GMN</h1>
+            <h1 className="font-metal hidden sm:block text-base tracking-wider font-semibold">GLOBAL MENACE NETWORK</h1>
           </div>
            {/* this checks the condition if the user is logged in or not */}
             <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />

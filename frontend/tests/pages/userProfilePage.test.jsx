@@ -112,31 +112,42 @@ describe("UserProfilePage edit profile", () => {
 
   test("updates username and shows new value", async () => {
     const user = userEvent.setup();
-
-    updateUser.mockResolvedValue({
-      user: { _id: "ME_ID", username: "NewName", email: "me@example.com" },
+  
+    // mock initial profile
+    getUserById.mockResolvedValue({
+      user: { _id: "ME_ID", username: "OldName", email: "me@example.com" },
     });
-
+  
+    // mock following if your component calls it
+    // getFollowing.mockResolvedValue({ users: [] });
+  
+    // mock the PUT /users/me fetch the component now uses
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        user: { _id: "ME_ID", username: "NewName", email: "me@example.com" },
+      }),
+    });
+  
     render(<UserProfilePage />);
-
-    const editBtn = await screen.findByRole("button", { name: /edit profile/i });
+  
+    const editBtn = await screen.findByRole('button', { name: /edit profile/i });
     await user.click(editBtn);
-
+  
     const input = await screen.findByDisplayValue("OldName");
     await user.clear(input);
     await user.type(input, "NewName");
-
+  
     const saveBtn = screen.getByRole("button", { name: /^save$/i });
     await user.click(saveBtn);
-
-    expect(updateUser).toHaveBeenCalledWith("me", { username: "NewName" }, "tkn");
-
-    // New username visible
-    const newNameText = await screen.findByText("NewName");
-    expect(newNameText).toBeTruthy();
-
-    // Toast appears if present
-    const toast = screen.queryByText(/profile updated/i);
-    if (toast) expect(toast).toBeTruthy();
+  
+    // assert UI result
+    expect(await screen.findByText("NewName")).toBeTruthy();
+  
+    // optional: assert the network call
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringMatching(/\/users\/me$/),
+      expect.objectContaining({ method: "PUT" })
+    );
   });
 });

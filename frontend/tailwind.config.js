@@ -14,8 +14,8 @@ export default {
         menace: "0 10px 30px -10px rgba(198, 50, 38, 0.45)",
       },
       fontFamily: {
-        // Inter first, then sensible fallbacks
         sans: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+        metal: ['"Metal Mania"', 'cursive'], 
       },
       container: { center: true, padding: "1rem" },
     },

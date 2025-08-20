@@ -22,6 +22,10 @@ body { @apply bg-menace-ink text-menace-cream font-sans; }
                Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji",
                "Segoe UI Symbol";
 
+  --font-metal: "Metal Mania", cursive, system-ui, -apple-system, "Segoe UI",
+               Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji",
+               "Segoe UI Symbol";
+
   /* brand colours */
   --color-menace-cream: #E4D6C3; /* text / light surfaces */
   --color-menace-red:   #C63226; /* primary / CTA */
