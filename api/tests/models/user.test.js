@@ -53,4 +53,5 @@ describe("User model", () => {
     expect(users[0].password).toEqual("password");
     expect(users[0].username).toEqual("username");
   });
+
 });

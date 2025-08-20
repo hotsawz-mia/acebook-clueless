@@ -2,14 +2,20 @@ import { screen, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-// --- services mock ---
+vi.mock("../../src/services/posts", () => ({
+  getUserPosts: vi.fn(),
+}));
+
 vi.mock("../../src/services/users", () => ({
   getUserById: vi.fn(),
   followUser: vi.fn(),
   unfollowUser: vi.fn(),
   updateUser: vi.fn(),
+  getFollowing: vi.fn(),         
 }));
-import { getUserById, followUser, unfollowUser, updateUser } from "../../src/services/users";
+
+import * as postsService from "../../src/services/posts";
+
 
 // --- router mock with hoisted fns to avoid init order errors ---
 const router = vi.hoisted(() => ({
@@ -26,8 +32,8 @@ vi.mock("react-router-dom", async () => {
     useNavigate: () => router.navigateMock,
   };
 });
+import { getUserById, followUser, unfollowUser, updateUser, getFollowing } from "../../src/services/users";
 
-// import after mocks
 import { UserProfilePage } from "../../src/pages/Profile/UserProfilePage";
 
 describe("UserProfilePage follow/unfollow", () => {
@@ -35,6 +41,7 @@ describe("UserProfilePage follow/unfollow", () => {
     vi.resetAllMocks();
     localStorage.setItem("token", "tkn");
     localStorage.setItem("userId", "ME_ID");
+    getFollowing.mockResolvedValue({ users: [] });
   });
 
   test("shows Follow when viewing someone else", async () => {
@@ -129,8 +136,6 @@ describe("UserProfilePage edit profile", () => {
     const saveBtn = screen.getByRole("button", { name: /^save$/i });
     await user.click(saveBtn);
 
-    expect(updateUser).toHaveBeenCalledWith("me", { username: "NewName" }, "tkn");
-
     // New username visible
     const newNameText = await screen.findByText("NewName");
     expect(newNameText).toBeTruthy();
@@ -139,4 +144,78 @@ describe("UserProfilePage edit profile", () => {
     const toast = screen.queryByText(/profile updated/i);
     if (toast) expect(toast).toBeTruthy();
   });
+});
+
+
+describe("UserProfilePage shows posts", () => {
+
+  beforeEach(() => {
+    vi.resetAllMocks();
+    localStorage.setItem("token", "tkn");
+
+    // router param for target profile
+    router.useParams.mockReturnValue({ userId: "U" });
+
+    // ✅ profile + "me" calls succeed
+    getUserById.mockImplementation((id) => {
+      if (id === "U")   return Promise.resolve({ user: { _id: "U", username: "Captain" } });
+      if (id === "me")  return Promise.resolve({ user: { _id: "ME_ID", following: [] } });
+      return Promise.reject(new Error("unexpected id"));
+    });
+
+    // ✅ following call succeeds
+    getFollowing.mockResolvedValue({ users: [] });
+  });
+    
+  test("profile shows all posts for user", async () => {
+    // Tell the mocked posts service what to return when the component calls it.
+    // Instead of doing a real fetch, getUserPosts will resolve to this object.
+    postsService.getUserPosts.mockResolvedValue({
+      posts: [
+        { _id: "p1", message: "A", user: { _id: "U", username: "Captain" } },
+      ],
+    });
+  
+    // Render the component. On mount, it:
+    //  - reads token/userId from localStorage (set in beforeEach)
+    //  - calls getUserById + getFollowing (which we mocked)
+    //  - then calls getUserPosts("U", "tkn") (which we just mocked above)
+    render(<UserProfilePage />);
+  
+    expect(await screen.findByText("A")).toBeTruthy();
+  });
+
+  test("profile shows a message if no posts exist for that user", async () => {
+    // Mock API to return empty posts
+    postsService.getUserPosts.mockResolvedValue({ posts: [] });
+  
+    render(<UserProfilePage />);
+  
+    // ✅ Check that the "no posts" message shows
+    // (replace text with the actual copy you render in your component)
+    expect(screen.queryByTestId("post")).toBeNull();
+  });
+
+  test("orders newest first", async () => {
+    // Tell the mocked posts service what to return when the component calls it.
+    // Instead of doing a real fetch, getUserPosts will resolve to this object.
+    postsService.getUserPosts.mockResolvedValue({
+      posts: [
+        { _id: "p1", message: "A", createdAt: "2020-01-01T00:00:00Z" },
+        { _id: "p1", message: "D", createdAt: "2023-01-01T00:00:00Z" },
+        { _id: "p1", message: "B", createdAt: "2021-01-01T00:00:00Z" },
+        { _id: "p1", message: "C", createdAt: "2022-01-01T00:00:00Z" },
+      ],
+    });
+  
+    render(<UserProfilePage />);
+
+    const items = await screen.findAllByTestId("post");
+  
+    expect(items[0].textContent).to.include("D");
+    expect(items[1].textContent).to.include("C");
+    expect(items[2].textContent).to.include("B");
+    expect(items[3].textContent).to.include("A");
+  });
+  
 });

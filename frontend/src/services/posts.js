@@ -51,3 +51,28 @@ export async function createPost(data, token) {
 
   return response.json();
 }
+
+
+/**
+ * Fetches ONLY the posts authored by a specific user.
+ * WHY: Profile page should not load the global feed and filter client-side.
+ *      This hits GET /users/:userId/posts on our API.
+ */
+export async function getUserPosts(userId, token) {
+  // Send auth so the API returns 200 instead of 401
+  const opts = { method: "GET", headers: { Authorization: `Bearer ${token}` } };
+
+  // Target the backend route you built in Express
+  const res = await fetch(`${BACKEND_URL}/users/${userId}/posts`, opts);
+
+  // Fail fast on non-OK so the page can redirect on 401, etc.
+  if (!res.ok) {
+    // Propagate the status for tests/handlers to branch on (e.g., 401 → login)
+    const err = new Error("Failed to fetch user posts");
+    err.status = res.status;
+    throw err;
+  }
+
+  // Shape: { posts: [...] }
+  return res.json();
+}
