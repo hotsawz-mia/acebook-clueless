@@ -73,7 +73,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   return (
     <>
       <div className="max-w-4xl mx-auto space-y-6">
-        <h2 className="font-metal text-5xl">All Users</h2>
+        <h2 className="font-metal text-5xl">The Damned</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {users.map((user) => (
@@ -101,7 +101,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Link to={`/user/${user._id}`} className="btn-primary flex-1 text-center">View Profile</Link>
+                  <Link to={`/user/${user._id}`} className="btn-primary flex-1 text-center">View Damned</Link>
                   <button
                     aria-label={followingSet.has(String(user._id)) ? "Unfollow" : "Follow"}
                     title={followingSet.has(String(user._id)) ? "Unfollow" : "Follow"}
