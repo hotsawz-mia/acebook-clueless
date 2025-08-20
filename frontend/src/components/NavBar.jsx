@@ -18,8 +18,8 @@ function NavBar({ isLoggedIn, user}) {
         </>
       ) : (
         <>
-          <Link to="/login" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Login</Link>
-          <Link to="/signup" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Sign Up</Link>
+          <Link to="/login" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Enter the Lair</Link>
+          <Link to="/signup" className="text-menace-cream/80 hover:text-menace-cream transition-colors">Swear Allegiance</Link>
         </>
       )}
     </nav>

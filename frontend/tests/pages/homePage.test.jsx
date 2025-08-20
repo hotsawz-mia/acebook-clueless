@@ -23,7 +23,7 @@ describe("Home Page", () => {
       </BrowserRouter>
     );
 
-    const signupLink = screen.getByText("Sign Up");
+    const signupLink = screen.getByText("Swear Allegiance");
     expect(signupLink.getAttribute("href")).toEqual("/signup");
   });
 
@@ -34,7 +34,7 @@ describe("Home Page", () => {
       </BrowserRouter>
     );
 
-    const loginLink = screen.getByText("Log In");
+    const loginLink = screen.getByText("Enter the Lair");
     expect(loginLink.getAttribute("href")).toEqual("/login");
   });
 });

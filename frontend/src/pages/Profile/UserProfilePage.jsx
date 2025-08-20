@@ -255,7 +255,7 @@ export function UserProfilePage() {
           ) : (
             <>
               <label className="block">
-                <span className="text-sm font-medium">Username</span>
+                <span className="text-sm font-medium">Alias</span>
                 <input
                   type="text"
                   value={usernameDraft}
@@ -265,7 +265,7 @@ export function UserProfilePage() {
               </label>
                 {/* added this for edit Bio */}
               <label className="block">
-                <span className="text-sm font-medium">Bio</span>
+                <span className="text-sm font-medium">Cursed Backstory</span>
                 <textarea
                   value={bioDraft}
                   onChange={(e) => setBioDraft(e.target.value)}
@@ -274,7 +274,7 @@ export function UserProfilePage() {
               </label>
                 {/* added this for edit Hobbies */}
               <label className="block">
-                <span className="text-sm font-medium">Hobbies</span>
+                <span className="text-sm font-medium">Dark Delights</span>
                 <input
                   type="text"
                   value={hobbiesDraft}
@@ -284,7 +284,7 @@ export function UserProfilePage() {
               </label>
 
               <label className="block">
-                <span className="text-sm font-medium">Profile Picture</span>
+                <span className="text-sm font-medium">Damned Visage</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -306,7 +306,7 @@ export function UserProfilePage() {
               )}
 
               <label className="block">
-                <span className="text-sm font-medium">Picture of Lair</span>
+                <span className="text-sm font-medium">Wretched Lair Portrait</span>
                 <input
                   type="file"
                   accept="image/*"

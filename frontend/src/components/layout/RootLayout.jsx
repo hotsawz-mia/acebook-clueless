@@ -5,6 +5,9 @@ import bgVideo from "../../assets/GMN-540-L.mp4"; // or put in /public and use "
 import NavBar from "../../components/NavBar";
 import { getUserById } from "../../services/users";
 
+import DripEffect from "../../components/layout/DripEffect";
+import CursorTrail from "../../components/layout/CursorTrail";
+import LightningOverlay from "../../components/layout/LightningOverlay";
 
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,6 +47,8 @@ export default function RootLayout() {
     // CHANGED: added flex + flex-col so header, main, footer stack vertically
     // and flexbox can allocate space correctly
     <div className="min-h-dvh bg-menace-ink text-menace-cream flex flex-col">
+      <LightningOverlay /> 
+      <CursorTrail />
       <header className="border-b border-white/10">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -59,8 +64,8 @@ export default function RootLayout() {
         </div>
       </header>
 
-      {/* CHANGED: replaced hard-coded h-[calc(...)] with flex-1 so main auto-fills 
-          all available vertical space between header and footer */}
+      <DripEffect />
+
       <main
         className={`relative overflow-hidden flex-1 ${
           // pathname === "/" ? "" : "container mx-auto px-4 py-6"
