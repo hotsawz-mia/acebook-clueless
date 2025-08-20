@@ -2,6 +2,17 @@ import { screen, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
+beforeEach(() => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ comments: [] }),
+  });
+});
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 vi.mock("../../src/services/posts", () => ({
   getUserPosts: vi.fn(),
 }));
@@ -171,6 +182,10 @@ describe("UserProfilePage shows posts", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+    global.fetch = vi.fn().mockResolvedValue({   // <-- re-add
+      ok: true,
+      json: async () => ({ comments: [] }),
+    });
     localStorage.setItem("token", "tkn");
 
     // router param for target profile

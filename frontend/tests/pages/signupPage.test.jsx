@@ -25,8 +25,8 @@ async function completeSignupForm() {
   const user = userEvent.setup();
 
   const emailInputEl = screen.getByLabelText(/Email/i);
-  const passwordInputEl = screen.getByLabelText(/Password/i);
-  const usernameInputEl = screen.getByLabelText(/Username/i);
+  const passwordInputEl = screen.getByLabelText(/Secret Oath/i);
+  const usernameInputEl = screen.getByLabelText(/Your Evil Name/i);
   const submitButtonEl = screen.getByRole("button", { name: /create account/i });
 
   await user.type(emailInputEl, "test@email.com");

@@ -15,7 +15,7 @@ function Post({ post }) {
       : null;
 
   return (
-    <article className="card card-hover p-6 space-y-4" data-post-id={safeId}>
+    <article data-testid="post" className="card card-hover p-6 space-y-4" data-post-id={safeId}>
       {(user || date) && (
         <div className="flex justify-between items-center text-sm text-gray-500">
           {user && <span>Posted by: {user.username ?? user.email}</span>}

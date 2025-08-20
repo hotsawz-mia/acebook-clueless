@@ -101,7 +101,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Link to={`/user/${user._id}`} className="btn-primary flex-1 text-center">View Damned</Link>
+                  <Link to={`/user/${user._id}`} className="btn-primary flex-1 text-center flicker">View Damned</Link>
                   <button
                     aria-label={followingSet.has(String(user._id)) ? "Unfollow" : "Follow"}
                     title={followingSet.has(String(user._id)) ? "Unfollow" : "Follow"}
