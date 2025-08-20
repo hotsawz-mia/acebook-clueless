@@ -168,4 +168,144 @@ describe("/posts", () => {
       expect(response.body.token).toEqual(undefined);
     });
   });
+
+  describe("GET /users/:userId/posts", () => {
+    test("returns 200 and only posts by :userId", async () => {
+      // 1. Create userA and userB
+      const userA = await new User({
+        email: `a+${Date.now()}@t.com`,
+        password: "12345678",
+        username: `a-${Date.now()}`
+      }).save();
+    
+      const userB = await new User({
+        email: `b+${Date.now()}@t.com`,
+        password: "12345678",
+        username: `b-${Date.now()}`
+      }).save();
+    
+      // 2. Create posts for both users
+      await new Post({ message: "A1", user: userA._id }).save();
+      await new Post({ message: "A2", user: userA._id }).save();
+      await new Post({ message: "B1", user: userB._id }).save();
+    
+      // 3. Call GET /users/:userA_id/posts with token
+      const res = await request(app)
+        .get(`/users/${userA._id}/posts`)
+        .set("Authorization", `Bearer ${token}`);
+
+      // 4. Expect response.status to be 200
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.posts)).toBe(true);
+
+      // 5. Expect response.body.posts length === 2
+      expect(res.body.posts).toHaveLength(2);
+    
+          // handle either ObjectId or populated object
+      const returnedUserIds = res.body.posts.map(p => String(p.user?._id ?? p.user));
+      expect(returnedUserIds.every(id => id === String(userA._id))).toBe(true);
+    
+      const messages = res.body.posts.map(p => p.message);
+
+      // 6. Expect all returned posts to belong to userA
+      expect(messages).toEqual(expect.arrayContaining(["A1", "A2"]));
+
+      // 7. Expect no posts from userB
+      expect(messages).not.toEqual(expect.arrayContaining(["B1"]));
+    });
+
+    test("sorts newest first", async () => {
+      // 1. Create userA and userB
+      const userA = await new User({
+        email: `a+${Date.now()}@t.com`,
+        password: "12345678",
+        username: `a-${Date.now()}`
+      }).save();
+
+      // 2. Create posts for this users
+      await new Post({ message: "A3", user: userA._id, createdAt: new Date("2022-01-01") }).save();
+      await new Post({ message: "A2", user: userA._id, createdAt: new Date("2021-01-01") }).save();
+      await new Post({ message: "A1", user: userA._id, createdAt: new Date("2020-01-01") }).save();
+      await new Post({ message: "A4", user: userA._id, createdAt: new Date("2023-01-01") }).save();
+
+      // 3. Call GET /users/:userA_id/posts with token
+      const res = await request(app)
+        .get(`/users/${userA._id}/posts`)
+        .set("Authorization", `Bearer ${token}`);
+
+      // 4. Expect response.status to be 200
+      expect(res.status).toBe(200);
+      const messages = res.body.posts.map(p => p.message);
+
+      // 5. Expect all returned posts to belong to userA
+      expect(messages).toEqual(["A4", "A3", "A2", "A1"]);
+
+      
+    });
+
+    test("includes populated author fields needed by frontend (username, _id)", async () => {
+
+      // 1. Create userA 
+      const userA = await new User({
+        email: `a+${Date.now()}@t.com`,
+        password: "12345678",
+        username: `Captain Testy`
+      }).save();
+      
+      // 2. Create posts for this users
+      await new Post({ message: "My post", user: userA._id, createdAt: new Date("2022-01-01") }).save();
+
+      // 3. Call GET /users/:userA_id/posts with token
+      const res = await request(app)
+      .get(`/users/${userA._id}/posts`)
+      .set("Authorization", `Bearer ${token}`);
+
+      // 4. Expect response.status to be 200
+      expect(res.status).toBe(200);
+      const author = res.body.posts[0].user;
+
+      // 5. Expect returned post to belong to userA and include their username
+      expect(author).toBeDefined();
+      expect(author.username).toBe("Captain Testy");
+      expect(String(author._id)).toBe(String(userA._id)); 
+
+    });
+
+    test("returns empty array when user has no posts", async () => {
+      // 1. Create userA
+      const userA = await new User({
+        email: `a+${Date.now()}@t.com`,
+        password: "12345678",
+        username: `User Name`
+      }).save();
+
+      // 2. Call GET /users/:userA_id/posts with token
+      const res = await request(app)
+      .get(`/users/${userA._id}/posts`)
+      .set("Authorization", `Bearer ${token}`);
+
+      // 3. Expect response.status to be 200
+      expect(res.status).toBe(200);
+
+      // 4. Expect all returned posts to belong to userA
+      expect(res.body.posts).toHaveLength(0);            
+    });
+
+    test("401 without token", async () => {
+      // 1. Create userA
+      const userA = await new User({
+        email: `a+${Date.now()}@t.com`,
+        password: "12345678",
+        username: `User Name`
+      }).save();
+
+      // 2. Call GET /users/:userA_id/posts with token
+      const res = await request(app)
+      .get(`/users/${userA._id}/posts`);
+
+      // 3. Expect response.status to be 401
+      expect(res.status).toBe(401);
+    });
+
+  });
 });
