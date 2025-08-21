@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import LikeButton from "./LikeButton.jsx";
 import CommentSection from "./CommentSection.jsx";
 import Avatar from "./Avatar.jsx"
@@ -17,19 +18,23 @@ function Post({ post }) {
   return (
     <article data-testid="post" className="card card-hover p-6 space-y-4" data-post-id={safeId}>
       {(user || date) && (
-        <div className="flex items-center gap-3 text-gray-400">
-          <Avatar 
-            src={user?.profilePicture} 
-            alt={`${user.username}'s avatar`} 
-            className="w-15 h-15 rounded-full" 
-          />
-          <div felx flex-col>
-            {user && <span className="textb-base text-gray-400"><strong>{user.username ?? user.email}</strong></span>} <br />
-            {date && (<span className="text-sm text-gray-500" data-testid="post-date">Posted at: {date}</span>
-            )}
+        <div className="flex items-center gap-3 text-gray-400">  
+          {/* Pfp links to the user profile*/}
+          <Link to={`/user/${user?._id ?? user?.id}`}>
+            <Avatar 
+              src={user?.profilePicture} 
+              alt={`${user.username}'s avatar`} 
+              className="w-15 h-15 rounded-full" 
+            />
+          </Link>
+          <div className="flex flex-col">
+            {user && <span className="text-base text-gray-400"><strong>{user.username ?? user.email}</strong></span>} <br />
+            {date && (<span className="text-sm text-gray-500" data-testid="post-date">Posted at: {date}</span>)}
           </div>
         </div>
       )}
+
+
       <p className="text-lg sm:text-xl font-semibold leading-snug">
         {message ?? "(no message)"}
       </p>
