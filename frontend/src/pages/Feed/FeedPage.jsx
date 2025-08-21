@@ -49,7 +49,6 @@ export function FeedPage() {
         <header className="card glass max-w-3xl mx-auto mt-2 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-
               <PostComposer onCreated={handleCreated} />
             </div>
           </div>
