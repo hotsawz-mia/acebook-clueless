@@ -269,29 +269,26 @@ async function seedDB() {
     createdUsers.forEach(u => { userMap[u.username] = u._id; });
 
     // Define relationships (by username)
-    const relationships = [
-      { username: "Dave", following: ["Hades", "MojoJojo"], followers: ["Hades"] },
-      { username: "Hades", following: ["Dave"], followers: ["Dave", "MojoJojo"] },
-      { username: "MojoJojo", following: ["Plankton"], followers: ["Dave"] },
-      { username: "Plankton", following: ["LordFarquaad"], followers: ["MojoJojo"] },
-      { username: "LordFarquaad", following: [], followers: ["Plankton"] },
-      { username: "Dave",         following: ["Hades", "MojoJojo", "Ursula", "Magica"], followers: ["Hades", "MojoJojo"] },
-      { username: "Hades",        following: ["Dave", "Ursula", "Maleficent"], followers: ["Dave", "MojoJojo", "Scar"] },
-      { username: "MojoJojo",     following: ["Plankton", "Hades", "Joker"], followers: ["Dave", "Plankton"] },
-      { username: "Plankton",     following: ["LordFarquaad", "Bowser", "DrDoom"], followers: ["MojoJojo", "Joker"] },
-      { username: "LordFarquaad", following: ["Scar", "Magneto", "DrDoom"], followers: ["Plankton", "Scar"] },
-      { username: "Ursula",       following: ["Hades", "Maleficent", "Magica"], followers: ["Hades", "Dave"] },
-      { username: "Scar",         following: ["LordFarquaad", "Joker", "Thanos"], followers: ["Hades", "LordFarquaad"] },
-      { username: "Magneto",      following: ["DrDoom", "Thanos", "Loki"], followers: ["Scar", "DrDoom"] },
-      { username: "Loki",         following: ["Thanos", "Magneto", "Maleficent"], followers: ["Magneto", "Joker"] },
-      { username: "Maleficent",   following: ["Ursula", "Magica", "Loki"], followers: ["Ursula", "Hades"] },
-      { username: "Bowser",       following: ["Plankton", "LordFarquaad", "Thanos"], followers: ["Plankton"] },
-      { username: "Thanos",       following: ["Loki", "Magneto", "DrDoom"], followers: ["Scar", "Bowser"] },
-      { username: "Joker",        following: ["MojoJojo", "Scar", "Loki"], followers: ["MojoJojo", "Plankton"] },
-      { username: "Magica",       following: ["Ursula", "Maleficent", "Hades"], followers: ["Ursula", "Dave"] },
-      { username: "DrDoom",       following: ["Magneto", "Thanos", "LordFarquaad"], followers: ["Magneto", "Plankton", "LordFarquaad"] },
-
-    ];
+const relationships = [
+  { username: "Dave",         following: ["Hades", "MojoJojo", "Ursula", "Magica"], followers: ["Hades", "MojoJojo"] },
+  { username: "Hades",        following: ["Dave", "Ursula", "Maleficent", "Aku"], followers: ["Dave", "MojoJojo", "Scar", "Aku"] },
+  { username: "MojoJojo",     following: ["Plankton", "Hades", "Joker", "Skeletor"], followers: ["Dave", "Plankton", "Evil Morty"] },
+  { username: "Plankton",     following: ["LordFarquaad", "Bowser", "DrDoom", "Evil Morty"], followers: ["MojoJojo", "Joker"] },
+  { username: "LordFarquaad", following: ["Scar", "Magneto", "DrDoom", "Skeletor"], followers: ["Plankton", "Scar", "Aku"] },
+  { username: "Ursula",       following: ["Hades", "Maleficent", "Magica"], followers: ["Hades", "Dave"] },
+  { username: "Scar",         following: ["LordFarquaad", "Joker", "Thanos"], followers: ["Hades", "LordFarquaad"] },
+  { username: "Magneto",      following: ["DrDoom", "Thanos", "Loki"], followers: ["Scar", "DrDoom"] },
+  { username: "Loki",         following: ["Thanos", "Magneto", "Maleficent"], followers: ["Magneto", "Joker"] },
+  { username: "Maleficent",   following: ["Ursula", "Magica", "Loki"], followers: ["Ursula", "Hades"] },
+  { username: "Bowser",       following: ["Plankton", "LordFarquaad", "Thanos"], followers: ["Plankton"] },
+  { username: "Thanos",       following: ["Loki", "Magneto", "DrDoom"], followers: ["Scar", "Bowser"] },
+  { username: "Joker",        following: ["MojoJojo", "Scar", "Loki"], followers: ["MojoJojo", "Plankton"] },
+  { username: "Magica",       following: ["Ursula", "Maleficent", "Hades"], followers: ["Ursula", "Dave"] },
+  { username: "DrDoom",       following: ["Magneto", "Thanos", "LordFarquaad"], followers: ["Magneto", "Plankton", "LordFarquaad"] },
+  { username: "Evil Morty",   following: ["Hades", "Aku"], followers: ["Dave", "Plankton", "MojoJojo"] },
+  { username: "Skeletor",     following: ["Aku", "LordFarquaad"], followers: ["Dave", "MojoJojo", "Aku"] },
+  { username: "Aku",          following: ["Evil Morty", "Hades"], followers: ["Hades", "Skeletor", "LordFarquaad"] },
+];
 
     // Update each user with correct references
     for (const rel of relationships) {
