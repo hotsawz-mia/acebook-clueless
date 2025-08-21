@@ -67,10 +67,10 @@ export default function RootLayout() {
       <DripEffect />
 
       <main
-        className={`relative overflow-hidden flex-1 ${
-          // pathname === "/" ? "" : "container mx-auto px-4 py-6"
-          pathname === "/" ? "grid place-items-center" : "container mx-auto px-4 py-6"
-
+        className={`relative flex-1 ${
+          pathname === "/"
+            ? "overflow-hidden grid place-items-center" // keep for video
+            : "container mx-auto px-4 py-6"             // no overflow here
         }`}
       >
         {showHomeBg && (
