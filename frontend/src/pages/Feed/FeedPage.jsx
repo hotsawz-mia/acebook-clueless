@@ -72,7 +72,7 @@ export function FeedPage() {
             ))
           ) : posts.length === 0 ? (
             <div className="card p-6 text-center">
-              <p className="muted">No posts yet.</p>
+              <p className="muted">No Memos of Malice yet.</p>
             </div>
           ) : (
             [...posts]

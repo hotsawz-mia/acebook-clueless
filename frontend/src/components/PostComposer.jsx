@@ -141,7 +141,7 @@ export default function PostComposer({ onCreated, className = "" }) {
         }}
         aria-hidden={compact}
       >
-        <label className="block font-semibold mb-1">Attach a photo:</label>
+        <label className="block font-semibold mb-1">Bind an image:</label>
         <div className="flex items-center gap-3">
           {/* visually hidden input */}
           <input
@@ -187,7 +187,7 @@ export default function PostComposer({ onCreated, className = "" }) {
           onClick={() => { setMessage(""); setPhoto(null); }}
           disabled={submitting}
         >
-          Clear
+          Purge
         </button>
         <button
           type="submit"
