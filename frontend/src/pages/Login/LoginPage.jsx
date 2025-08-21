@@ -54,7 +54,7 @@ export function LoginPage() {
               <p className="text-sm text-red-400" role="alert">{error}</p>
             )}
 
-            <button type="submit" aria-label="Sign In" disabled={loading} className="btn-primary w-full">
+            <button type="submit" aria-label="Sign In" disabled={loading} className="btn-primary w-full flicker">
               {loading ? "Signing in…" : "Enter the Lair"}
             </button>
           </form>

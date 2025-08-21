@@ -13,7 +13,7 @@ function LogoutButton({ setIsLoggedIn }) {
   return (
     <button
       onClick={logOut}
-      className="btn-primary px-4 py-2 rounded-lg text-white text-sm transition hover:bg-black hover:text-red-500"
+      className="btn-primary px-4 py-2 rounded-lg text-white text-sm flicker"
     >
       Logout
     </button>

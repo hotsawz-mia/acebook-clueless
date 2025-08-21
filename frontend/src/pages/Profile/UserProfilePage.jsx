@@ -329,7 +329,7 @@ export function UserProfilePage() {
 
 
               <div className="flex gap-2">    
-                <button onClick={handleSaveProfile} disabled={saving} className="btn-primary">
+                <button onClick={handleSaveProfile} disabled={saving} className="btn-primary flicker">
                   {saving ? "Saving..." : "Save"}
                 </button>
                 <button
@@ -343,9 +343,9 @@ export function UserProfilePage() {
                     setBackgroundPictureDraft(null); // reset file
                     setBackgroundPicturePreview(user.profilePicture || "");// reset to stored image
                   }}
-                  className="btn-outline"
+                  className="btn-ghost jumpscare"
                 >
-                  Cancel
+                  Purge
                 </button>
               </div>
             </>

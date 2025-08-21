@@ -68,8 +68,8 @@ export function SignupPage() {
             />
           </div>
 
-          <button id="submit" type="submit" className="btn-primary w-full">
-            Create account
+          <button id="submit" type="submit" className="btn-primary w-full flicker">
+            Swear the Blood Oath
           </button>
         </form>
       </div>

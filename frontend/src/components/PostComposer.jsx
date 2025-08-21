@@ -183,7 +183,7 @@ export default function PostComposer({ onCreated, className = "" }) {
         <div className="mt-2 flex flex-wrap justify-end gap-3">
         <button
           type="button"
-          className="btn-ghost"
+          className="btn-ghost jumpscare"
           onClick={() => { setMessage(""); setPhoto(null); }}
           disabled={submitting}
         >
