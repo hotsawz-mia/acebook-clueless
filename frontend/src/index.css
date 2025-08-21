@@ -71,7 +71,9 @@ body { @apply bg-menace-ink text-menace-cream font-sans; }
 @layer components {
   /* layout helpers */
   .shell {
-    @apply min-h-dvh bg-menace-ink text-menace-cream;
+    @apply min-h-dvh 
+    /* bg-menace-ink  */
+    text-menace-cream;
   }
   .header {
     @apply border-b border-white/10;
