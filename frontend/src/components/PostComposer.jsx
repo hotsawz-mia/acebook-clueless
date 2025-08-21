@@ -10,11 +10,12 @@ export default function PostComposer({ onCreated, className = "" }) {
 
   // compacting logic
   const [scrolledDown, setScrolledDown] = useState(false);
-  const [focused, setFocused] = useState(false);
+  const [active, setActive] = useState(false);
   const scrollHandlerRef = useRef(null);
+  const textareaRef = useRef(null);
 
-  // Compact only when scrolled, not focused, and empty
-  const compact = scrolledDown && !focused && message.length === 0;
+  // Compact only when scrolled, not active (no focus within), and empty
+  const compact = scrolledDown && !active && message.length === 0;
 
   useEffect(() => {
     const THRESHOLD = 100;
@@ -81,6 +82,15 @@ export default function PostComposer({ onCreated, className = "" }) {
       onSubmit={handleSubmit}
       className={`p-4 relative ${className}`}
       aria-expanded={!compact}
+      onFocus={() => setActive(true)}           // any focus inside keeps it active
+      onBlur={(e) => {                          // collapse only when focus leaves the form entirely
+        const next = e.relatedTarget;
+        if (!e.currentTarget.contains(next)) setActive(false);
+      }}
+      onClick={() => {                          // tapping anywhere opens and focuses textarea
+        setActive(true);
+        if (textareaRef.current) textareaRef.current.focus();
+      }}
     >
       <style>{`
         @keyframes menace-burst {
@@ -106,32 +116,54 @@ export default function PostComposer({ onCreated, className = "" }) {
       {/* Textarea height animates via min-height */}
       <textarea
         id="composer-message"
+        ref={textareaRef}
         maxLength={280}
         value={message}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Describe what's on your menacing mind"
-
         className="input w-full resize-y"
         style={{
           minHeight: compact ? 44 : 160, // px
           transition: "min-height 220ms ease, box-shadow 200ms ease",
         }}
       />
-      {/* New photo input */}
-      <div className="mt-3">
-        <label htmlFor="composer-photo" className="block font-semibold mb-1">Attach a photo:</label>
-        <input
-          id="composer-photo"
-          type="file"
-          accept="image/*"
-          onChange={(e) => setPhoto(e.target.files[0])}
-          disabled={submitting}
-        />
-        {photo && <p className="mt-1 text-sm">Selected file: {photo.name}</p>}
-      </div>
 
+      <div
+        className="mt-3"
+        style={{
+          maxHeight: compact ? 0 : 72,
+          opacity: compact ? 0 : 1,
+          transform: compact ? "translateY(-6px)" : "translateY(0)",
+          overflow: "hidden",
+          transition:
+            "max-height 260ms ease, opacity 200ms ease, transform 200ms ease",
+          pointerEvents: compact ? "none" : "auto",
+        }}
+        aria-hidden={compact}
+      >
+        <label className="block font-semibold mb-1">Attach a photo:</label>
+        <div className="flex items-center gap-3">
+          {/* visually hidden input */}
+          <input
+            id="composer-photo"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setPhoto(e.target.files?.[0] || null)}
+            disabled={submitting}
+            className="sr-only"
+          />
+          <label
+            htmlFor="composer-photo"
+            className="btn-ghost cursor-pointer select-none"
+            tabIndex={0}
+          >
+            {photo ? "Change file" : "Choose file"}
+          </label>
+          <span className="text-sm muted truncate max-w-[55%]">
+            {photo ? photo.name : "No file selected"}
+          </span>
+        </div>
+      </div>
 
       {/* Counter + errors (fade/slide & height collapse) */}
       <div
@@ -148,38 +180,12 @@ export default function PostComposer({ onCreated, className = "" }) {
       >
         <span className="muted">{280 - message.length} left</span>
         {error && <span className="text-red-400">{error}</span>}
-      </div>
-
-      {/* Buttons (same animation) */}
-      <div
-        style={{
-          maxHeight: compact ? 0 : 60,
-          opacity: compact ? 0 : 1,
-          transform: compact ? "translateY(-6px)" : "translateY(0)",
-          overflow: "hidden",
-          transition:
-            "max-height 260ms ease, opacity 200ms ease, transform 200ms ease",
-        }}
-        className="mt-1 flex justify-end gap-3"
-        aria-hidden={compact}
-      >
-        {/* New photo input */}
-        <div className="mt-3">
-          <label htmlFor="composer-photo" className="block font-semibold mb-1">Attach a photo:</label>
-          <input
-            id="composer-photo"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setPhoto(e.target.files[0])}
-            disabled={submitting}
-          />
-          {photo && <p className="mt-1 text-sm">Selected file: {photo.name}</p>}
-        </div>
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
         <button
           type="button"
           className="btn-ghost"
           onClick={() => { setMessage(""); setPhoto(null); }}
-          disabled={submitting && message.length === 0 && !photo}
+          disabled={submitting}
         >
           Clear
         </button>
@@ -193,6 +199,10 @@ export default function PostComposer({ onCreated, className = "" }) {
           {submitting ? "Submitting..." : "Post"}
         </button>
       </div>
+      </div>
+
+      {/* Buttons (same animation) */}
+      
 
       {celebrating && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
