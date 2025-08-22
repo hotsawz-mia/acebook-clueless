@@ -38,7 +38,7 @@ async function createPost(req, res) {
       // Construct URL relative to /uploads
       photoUrl = `/uploads/${req.file.filename}`;
     }
-
+    //creating content of post
     const post = new Post({
       message: message?.trim(),
       user: userId,
@@ -50,7 +50,7 @@ async function createPost(req, res) {
     });
 
     await post.save();
-
+      
     const token = generateToken(userId);
     res.status(201).json({ message: "Post created", token, post });
   } catch (error) {

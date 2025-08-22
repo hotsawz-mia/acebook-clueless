@@ -34,7 +34,7 @@ export function FeedPage() {
     }
   }
   return (
-    <main className="shell">
+    <section className="shell">
       {/* board info */}
       <div className="hidden sm:flex flex-col items-center gap-1">
       <h2 className="font-metal text-5xl">Board of Misdeeds</h2>
@@ -49,7 +49,6 @@ export function FeedPage() {
         <header className="card glass max-w-3xl mx-auto mt-2 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-
               <PostComposer onCreated={handleCreated} />
             </div>
           </div>
@@ -73,7 +72,7 @@ export function FeedPage() {
             ))
           ) : posts.length === 0 ? (
             <div className="card p-6 text-center">
-              <p className="muted">No posts yet.</p>
+              <p className="muted">No Memos of Malice yet.</p>
             </div>
           ) : (
             [...posts]
@@ -86,6 +85,6 @@ export function FeedPage() {
           <p>© Global Menace Network</p>
         </footer>
       </section>
-    </main>
+    </section>
   );
 }

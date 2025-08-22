@@ -19,7 +19,7 @@ function tokenChecker(req, res, next) {
     if (!req.user_id) return res.status(401).json({ message: "auth error" });
 
     // optional: rotate token
-    res.locals.token = JWT.sign({ sub: req.user_id }, process.env.JWT_SECRET, { expiresIn: "10m" });
+    res.locals.token = JWT.sign({ sub: req.user_id }, process.env.JWT_SECRET, { expiresIn: "59m" });
 
     next();
   } catch (err) {

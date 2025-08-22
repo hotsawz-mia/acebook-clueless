@@ -228,7 +228,7 @@ export function UserProfilePage() {
       <h2 className="font-metal text-5xl">
         {viewingOwn 
           ? "Your" 
-          : `${user.username || user.email}'s`} Profile
+          : `${user.username || user.email}'s`} Dreadfolio
       </h2>
 
       {!viewingOwn && (
@@ -255,7 +255,7 @@ export function UserProfilePage() {
           ) : (
             <>
               <label className="block">
-                <span className="text-sm font-medium">Alias</span>
+                <span className="text-sm font-medium"> Evil Alias</span>
                 <input
                   type="text"
                   value={usernameDraft}
@@ -374,6 +374,7 @@ export function UserProfilePage() {
       </div>
 
       {/* Entourage section */}
+      
       <section className="w-80 mx-auto space-y-3 ml-0">
         <h3 className="font-metal text-2xl" aria-label="Following">
           Entourage
@@ -383,7 +384,7 @@ export function UserProfilePage() {
           ) : following.length === 0 ? (
             <p className="text-zinc-400">
               <span className="sr-only">Not following anyone yet.</span>
-              Your entourage is empty.
+              Your entourage slumbers... alone.
             </p>
           ) : (
         <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
@@ -445,7 +446,7 @@ export function UserProfilePage() {
       {/* Posts section */}
       <section className="space-y-3">
         <h3 className="text-xl font-semibold" aria-label="Posts">
-        Their Posts
+        Memos of Malice
         </h3>
 
         <div className="space-y-4" role="feed" aria-busy={postsLoading}>
@@ -453,7 +454,7 @@ export function UserProfilePage() {
             <p>Loading…</p>
           ) : posts.length === 0 ? (
             <div className="card p-6 text-center">
-              <p className="muted">No posts yet.</p>
+              <p className="muted">No Memos of Malice yet.</p>
             </div>
           ) : (
             posts

@@ -9,39 +9,42 @@ import DripEffect from "../../components/layout/DripEffect";
 import CursorTrail from "../../components/layout/CursorTrail";
 import LightningOverlay from "../../components/layout/LightningOverlay";
 
+function isTokenValid(token) {
+  return token && token !== "undefined" && token !== "";
+}
+
 export default function RootLayout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(isTokenValid(localStorage.getItem("token")));
   const [user, setUser] = useState(null);
   const { pathname } = useLocation();
   const showHomeBg = pathname === "/";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+  setIsLoggedIn(isTokenValid(token));
 
-    if (token) {
+  if (isTokenValid(token)) {
+    getUserById("me", token)
+      .then((data) => setUser(data.user))
+      .catch(() => setUser(null));
+  } else {
+    setUser(null);
+  }
+
+  const handleStorage = () => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(isTokenValid(token));
+    if (isTokenValid(token)) {
       getUserById("me", token)
         .then((data) => setUser(data.user))
         .catch(() => setUser(null));
     } else {
       setUser(null);
     }
-
-    const handleStorage = () => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
-      if (token) {
-        getUserById("me", token)
-          .then((data) => setUser(data.user))
-          .catch(() => setUser(null));
-      } else {
-        setUser(null);
-      }
-    };
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
-  
+  };
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
+}, []);
 
   return (
     // CHANGED: added flex + flex-col so header, main, footer stack vertically
@@ -67,10 +70,10 @@ export default function RootLayout() {
       <DripEffect />
 
       <main
-        className={`relative overflow-hidden flex-1 ${
-          // pathname === "/" ? "" : "container mx-auto px-4 py-6"
-          pathname === "/" ? "grid place-items-center" : "container mx-auto px-4 py-6"
-
+        className={`relative flex-1 ${
+          pathname === "/"
+            ? "overflow-hidden grid place-items-center" // keep for video
+            : "container mx-auto px-4 py-6"             // no overflow here
         }`}
       >
         {showHomeBg && (
